@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@color/white"
+    android:layout_height="match_parent"
+    tools:context=".ui.LoginActivity">
+
+    <ImageView
+        android:layout_marginTop="40dp"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/icon_baadalletta"
+        android:layout_width="100dp"
+        android:id="@+id/img1"
+        android:layout_height="100dp"/>
+
+    <TextView
+        android:id="@+id/tv1"
+        android:layout_marginTop="50dp"
+        android:layout_marginHorizontal="16dp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:textSize="26dp"
+        android:layout_below="@id/img1"
+        android:text="Login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/tv_telpon"
+        android:layout_marginTop="30dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_below="@id/tv1"
+        android:text="Nomor Telpon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <EditText
+        android:id="@+id/et_telpon"
+        android:background="@drawable/bg_input_login"
+        android:layout_below="@id/tv_telpon"
+        android:textColorHint="@color/black2"
+        android:layout_marginTop="12dp"
+        android:layout_marginHorizontal="16dp"
+        android:hint="08xxxxxx"
+        android:paddingVertical="8dp"
+        android:textColor="@color/black2"
+        android:paddingHorizontal="16dp"
+        android:inputType="phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/tv_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/et_telpon"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="30dp"
+        android:text="Password" />
+
+    <EditText
+        android:id="@+id/et_password"
+        android:background="@drawable/bg_input_login"
+        android:layout_below="@id/tv_password"
+        android:textColorHint="@color/black2"
+        android:layout_marginTop="12dp"
+        android:layout_marginHorizontal="16dp"
+        android:hint="Lengkapi"
+        android:inputType="textPassword"
+        android:paddingVertical="8dp"
+        android:textColor="@color/black2"
+        android:paddingHorizontal="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_masuk"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/et_password"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/bg_primary_radius_8"
+        android:paddingVertical="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Masuk"
+            android:textColor="@color/white"
+            android:textSize="18dp"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:text="Baadalletta versi 0.01 alfa preview"
+        android:textColor="@color/black2" />
+
+
+</RelativeLayout>

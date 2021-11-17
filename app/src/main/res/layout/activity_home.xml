@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@color/white"
+    android:layout_height="match_parent"
+    tools:context=".ui.HomeActivity">
+
+    <RelativeLayout
+        android:id="@+id/rl_toolbar"
+        android:background="@color/ColorPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="56dp">
+
+        <ImageView
+            android:id="@+id/img_logo_baadalletta"
+            android:src="@drawable/icon_white_baadalletta"
+            android:layout_width="40dp"
+            android:padding="2dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_centerVertical="true"
+            android:layout_height="40dp"/>
+        <TextView
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/img_logo_baadalletta"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="18dp"
+            android:text="Baadalletta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+
+    <fragment
+        android:layout_below="@+id/rl_toolbar"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/ll_nav_bottom" />
+
+    <LinearLayout
+        android:id="@+id/ll_nav_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:elevation="5dp"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+        <ImageView
+            android:id="@+id/img_home"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginVertical="8dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_baseline_home_24"
+            app:tint="@color/ColorPrimary" />
+
+        <RelativeLayout
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="3dp"
+                android:fontFamily="casual"
+                android:text="Scan"
+                android:textColor="@color/ColorPrimary"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/img_user"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginVertical="8dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_baseline_person_24"
+            app:tint="@color/ColorPrimary" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/img_qr_code"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignTop="@id/ll_nav_bottom"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="-25dp"
+        android:background="@drawable/bg_lingkaran"
+        android:elevation="5dp"
+        android:padding="10dp"
+        android:src="@drawable/icon_qr" />
+
+
+</RelativeLayout>
