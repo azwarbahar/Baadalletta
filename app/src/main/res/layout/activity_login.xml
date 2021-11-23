@@ -3,53 +3,53 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/white"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".ui.LoginActivity">
 
     <ImageView
-        android:layout_marginTop="40dp"
-        android:layout_centerHorizontal="true"
-        android:src="@drawable/icon_baadalletta"
-        android:layout_width="100dp"
         android:id="@+id/img1"
-        android:layout_height="100dp"/>
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:src="@drawable/icon_baadalletta" />
 
     <TextView
         android:id="@+id/tv1"
-        android:layout_marginTop="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/img1"
         android:layout_marginHorizontal="16dp"
-        android:textStyle="bold"
+        android:layout_marginTop="50dp"
+        android:text="Login"
         android:textColor="@color/black"
         android:textSize="26dp"
-        android:layout_below="@id/img1"
-        android:text="Login"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/tv_telpon"
-        android:layout_marginTop="30dp"
-        android:layout_marginHorizontal="16dp"
-        android:layout_below="@id/tv1"
-        android:text="Nomor Telpon"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv1"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="30dp"
+        android:text="Nomor Telpon" />
 
     <EditText
         android:id="@+id/et_telpon"
-        android:background="@drawable/bg_input_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@id/tv_telpon"
-        android:textColorHint="@color/black2"
-        android:layout_marginTop="12dp"
         android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/bg_input_login"
         android:hint="08xxxxxx"
+        android:inputType="phone"
+        android:paddingHorizontal="16dp"
         android:paddingVertical="8dp"
         android:textColor="@color/black2"
-        android:paddingHorizontal="16dp"
-        android:inputType="phone"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:textColorHint="@color/black2" />
 
     <TextView
         android:id="@+id/tv_password"
@@ -62,18 +62,18 @@
 
     <EditText
         android:id="@+id/et_password"
-        android:background="@drawable/bg_input_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@id/tv_password"
-        android:textColorHint="@color/black2"
-        android:layout_marginTop="12dp"
         android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/bg_input_login"
         android:hint="Lengkapi"
         android:inputType="textPassword"
+        android:paddingHorizontal="16dp"
         android:paddingVertical="8dp"
         android:textColor="@color/black2"
-        android:paddingHorizontal="16dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:textColorHint="@color/black2" />
 
     <RelativeLayout
         android:id="@+id/rl_masuk"
