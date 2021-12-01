@@ -5,17 +5,20 @@
       <map>
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/drawable/bg_input_login.xml" value="0.20989583333333334" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/drawable/bg_lingkaran.xml" value="0.20989583333333334" />
+        <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/drawable/bg_primary_corner_bottom_12.xml" value="0.20989583333333334" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/drawable/bg_primary_radius_8.xml" value="0.20989583333333334" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/drawable/bg_radius_up_12.xml" value="0.20989583333333334" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/drawable/bg_success.xml" value="0.20989583333333334" />
+        <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/drawable/ic_img_marker_1.xml" value="0.20989583333333334" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/activity_akun.xml" value="0.22" />
+        <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/activity_detail_pesanan.xml" value="0.19375" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/activity_edit_akun.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/activity_edit_password.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/activity_history.xml" value="0.19375" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/activity_home.xml" value="0.22" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/activity_login.xml" value="0.22" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/activity_splash_screen.xml" value="0.19375" />
-        <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/item_pesanan_home.xml" value="0.22" />
+        <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/item_pesanan_home.xml" value="0.4466666666666667" />
       </map>
     </option>
   </component>

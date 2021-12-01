@@ -39,8 +39,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="8dp"
-            android:maxLines="2"
             android:layout_toRightOf="@id/tv_nomor"
+            android:maxLines="2"
             android:text="@string/alamat"
             android:textColor="@color/black"
             android:textSize="12dp" />
@@ -59,10 +59,10 @@
             android:id="@+id/tv_kode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
             android:layout_below="@id/tv_nama"
             android:layout_alignLeft="@id/tv_alamat"
-            android:text="Kode : Azwar Bahar" />
+            android:text="Kode : Azwar Bahar"
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/tv_jarak"

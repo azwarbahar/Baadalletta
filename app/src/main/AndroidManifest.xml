@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
@@ -20,6 +21,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Baadalletta">
+        <activity
+            android:name=".ui.DetailPesananActivity"
+            android:exported="true" />
         <activity
             android:name=".ui.HistoryActivity"
             android:exported="true" />
@@ -37,6 +41,10 @@
             android:exported="true" />
         <activity
             android:name=".ui.SplashScreenActivity"
+            android:exported="true">
+        </activity>
+        <activity
+            android:name=".ui.HomeActivity"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -45,16 +53,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.HomeActivity"
-            android:exported="true" />
-        <activity
             android:name=".MainActivity"
-            android:exported="true">
-        </activity>
+            android:exported="true"></activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAISwXwMy9RIBS6qnrxkC3fPRL3hfSrJSg" />
+            android:value="AIzaSyDV6TkgOG03jL2sEnUP7umqQ3qeJtyVK_M" />
     </application>
 
 </manifest>
