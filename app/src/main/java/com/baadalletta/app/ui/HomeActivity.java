@@ -23,8 +23,11 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.baadalletta.app.BuildConfig;
 import com.baadalletta.app.R;
 import com.baadalletta.app.adapter.PesananHomeAdapter;
+import com.baadalletta.app.directionhelper.FetchURL;
+import com.baadalletta.app.directionhelper.TaskLoadedCallback;
 import com.baadalletta.app.models.Customer;
 import com.baadalletta.app.models.Pesanan;
 import com.baadalletta.app.models.ResponsePesananKurir;
@@ -47,9 +50,12 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import retrofit2.Call;
@@ -61,9 +67,11 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         GoogleApiClient.OnConnectionFailedListener,
         com.google.android.gms.location.LocationListener,
         GoogleMap.OnPolylineClickListener,
+        TaskLoadedCallback,
         PesananHomeAdapter.PesananListRecyclerClickListener {
 
     private GoogleMap map;
+    private Polyline currentPolyline;
 
     private ImageView img_user;
 
@@ -84,6 +92,11 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
     private ArrayList<Pesanan> pesananArrayList;
 
     private LatLngBounds.Builder builder = new LatLngBounds.Builder();
+    private LatLngBounds.Builder builder_item = new LatLngBounds.Builder();
+
+    List<Marker> marker_list = new ArrayList<Marker>();
+    HashMap<String, Pesanan> markerMapPesanan = new HashMap<String, Pesanan>();
+    List<String> position_hashap = new ArrayList<String>();
 
     // IMG MARKER
     int[] img_marker = {R.drawable.img_marker_1, R.drawable.img_marker_2, R.drawable.img_marker_3,
@@ -175,8 +188,33 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-
     }
+
+    private void clickMarkerPesanan(Marker marker) {
+
+        if (markerMapPesanan.get(marker.getId()) != null) {
+            Pesanan pesanan = markerMapPesanan.get(marker.getId());
+            builder_item.include(marker.getPosition());
+            builder_item.include(marker_list.get(0).getPosition());
+
+            LatLngBounds bounds = builder_item.build();
+            int width = getResources().getDisplayMetrics().widthPixels;
+            int height = getResources().getDisplayMetrics().heightPixels;
+            int padding = (int) (width * 0.16); // offset from edges of the map 10% of screen
+
+            CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding);
+            map.animateCamera(cu);
+            for (int i = 0; i < marker_list.size(); i++) {
+                if (position_hashap.get(i).equals(marker.getId())) {
+                    new FetchURL(HomeActivity.this).execute(getUrl(marker_list.get(0).getPosition(),
+                            marker_list.get(i + 1).getPosition(), "driving"), "driving");
+                    break;
+                }
+            }
+
+        }
+    }
+
 
     private void initMapsPesanan(ArrayList<Pesanan> pesananArrayList) {
         PolygonOptions polyOptions = new PolygonOptions();
@@ -191,14 +229,16 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Marker marker = map.addMarker(new MarkerOptions().title("Rumah Pelanggan")
                         .icon(bitmapDescriptor(this, i))
                         .position(new LatLng(latitude_pelanggan, longitude_pelanggan)));
+                marker_list.add(marker);
                 builder.include(marker.getPosition());
                 polyOptions.add(new LatLng(latitude_pelanggan, longitude_pelanggan));
-
                 String idmark = marker.getId();
-//                markerMapMasyarakat.put(idmark, masayarkats.get(i));
+                position_hashap.add(idmark);
+                markerMapPesanan.put(idmark, pesananArrayList.get(i));
+
             }
         }
-        map.addPolygon(polyOptions);
+//        map.addPolygon(polyOptions);
         LatLngBounds bounds = builder.build();
         int width = getResources().getDisplayMetrics().widthPixels;
         int height = getResources().getDisplayMetrics().heightPixels;
@@ -232,6 +272,22 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 
+    private String getUrl(LatLng origin, LatLng dest, String directionMode) {
+        // Origin of route
+        String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
+        // Destination of route
+        String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
+        // Mode
+        String mode = "mode=" + directionMode;
+        // Building the parameters to the web service
+        String parameters = str_origin + "&" + str_dest + "&" + mode;
+        // Output format
+        String output = "json";
+        // Building the url to the web service
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + BuildConfig.API_KEY_MAPS;
+        return url;
+    }
+
     @Override
     public void onBackPressed() {
         if (sliding_layout != null &&
@@ -251,6 +307,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         Marker marker1 = map.addMarker(new MarkerOptions().icon(bitmapDescriptorBaadalletta(this))
                 .position(new LatLng(latitude_baadalletta, longitude_baadalletta)));
         builder.include(marker1.getPosition());
+        marker_list.add(0, marker1);
 
         try {
             boolean success = googleMap.setMapStyle(
@@ -284,6 +341,13 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
 //            map.setMyLocationEnabled(true);
 //        }
 
+        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                clickMarkerPesanan(marker);
+                return false;
+            }
+        });
     }
 
     @Override
@@ -332,5 +396,12 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onPolylineClick(Polyline polyline) {
 
+    }
+
+    @Override
+    public void onTaskDone(Object... values) {
+        if (currentPolyline != null)
+            currentPolyline.remove();
+        currentPolyline = map.addPolyline((PolylineOptions) values[0]);
     }
 }
