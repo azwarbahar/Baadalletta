@@ -1,7 +1,10 @@
 package com.baadalletta.app.models;
 
 
-public class Pesanan {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Pesanan implements Parcelable {
 
 	private int fee_pengerjaan;
 
@@ -36,6 +39,38 @@ public class Pesanan {
 	private String lokasi_tujuan;
 
 	private Customer customer;
+
+	protected Pesanan(Parcel in) {
+		fee_pengerjaan = in.readInt();
+		ongkir = in.readInt();
+		id_customer = in.readInt();
+		created_at = in.readString();
+		id_kurir = in.readInt();
+		status_pesanan = in.readString();
+		total = in.readInt();
+		updated_at = in.readString();
+		titik_koordinat = in.readString();
+		status_pembayaran = in.readString();
+		sub_total = in.readInt();
+		id = in.readInt();
+		foto_pengantaran = in.readString();
+		mode_pesanan = in.readString();
+		id_tipe_pengiriman = in.readInt();
+		lokasi_tujuan = in.readString();
+		customer = in.readParcelable(Customer.class.getClassLoader());
+	}
+
+	public static final Creator<Pesanan> CREATOR = new Creator<Pesanan>() {
+		@Override
+		public Pesanan createFromParcel(Parcel in) {
+			return new Pesanan(in);
+		}
+
+		@Override
+		public Pesanan[] newArray(int size) {
+			return new Pesanan[size];
+		}
+	};
 
 	public int getFee_pengerjaan() {
 		return fee_pengerjaan;
@@ -103,5 +138,31 @@ public class Pesanan {
 
 	public Customer getCustomer() {
 		return customer;
+	}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel parcel, int i) {
+		parcel.writeInt(fee_pengerjaan);
+		parcel.writeInt(ongkir);
+		parcel.writeInt(id_customer);
+		parcel.writeString(created_at);
+		parcel.writeInt(id_kurir);
+		parcel.writeString(status_pesanan);
+		parcel.writeInt(total);
+		parcel.writeString(updated_at);
+		parcel.writeString(titik_koordinat);
+		parcel.writeString(status_pembayaran);
+		parcel.writeInt(sub_total);
+		parcel.writeInt(id);
+		parcel.writeString(foto_pengantaran);
+		parcel.writeString(mode_pesanan);
+		parcel.writeInt(id_tipe_pengiriman);
+		parcel.writeString(lokasi_tujuan);
+		parcel.writeParcelable(customer, i);
 	}
 }

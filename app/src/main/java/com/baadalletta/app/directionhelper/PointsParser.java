@@ -22,6 +22,7 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
         this.taskCallback = (TaskLoadedCallback) mContext;
         this.directionMode = directionMode;
     }
+
     // Parsing the data in non-ui thread
     @Override
     protected List<List<HashMap<String, String>>> doInBackground(String... jsonData) {

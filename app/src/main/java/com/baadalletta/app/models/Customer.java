@@ -1,7 +1,10 @@
 package com.baadalletta.app.models;
 
 
-public class Customer{
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Customer implements Parcelable {
 
 	private String whatsapp;
 
@@ -52,6 +55,46 @@ public class Customer{
 	private String kota_id;
 
 	private String status;
+
+	protected Customer(Parcel in) {
+		whatsapp = in.readString();
+		distance = in.readString();
+		kec_id = in.readString();
+		kode_referal = in.readString();
+		latitude = in.readString();
+		created_at = in.readString();
+		id_kategori_pelanggan = in.readInt();
+		foto_rumah = in.readString();
+		foto_pelanggan = in.readString();
+		updated_at = in.readString();
+		kode = in.readString();
+		no_ktp = in.readString();
+		id = in.readInt();
+		longitude = in.readString();
+		jenis_pelanggan = in.readString();
+		prov_id = in.readString();
+		label_lokasi = in.readString();
+		foto_ktp = in.readString();
+		alamat = in.readString();
+		kel_id = in.readString();
+		nama = in.readString();
+		pekerjaan = in.readString();
+		tanggal = in.readString();
+		kota_id = in.readString();
+		status = in.readString();
+	}
+
+	public static final Creator<Customer> CREATOR = new Creator<Customer>() {
+		@Override
+		public Customer createFromParcel(Parcel in) {
+			return new Customer(in);
+		}
+
+		@Override
+		public Customer[] newArray(int size) {
+			return new Customer[size];
+		}
+	};
 
 	public String getWhatsapp() {
 		return whatsapp;
@@ -151,5 +194,39 @@ public class Customer{
 
 	public String getStatus() {
 		return status;
+	}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel parcel, int i) {
+		parcel.writeString(whatsapp);
+		parcel.writeString(distance);
+		parcel.writeString(kec_id);
+		parcel.writeString(kode_referal);
+		parcel.writeString(latitude);
+		parcel.writeString(created_at);
+		parcel.writeInt(id_kategori_pelanggan);
+		parcel.writeString(foto_rumah);
+		parcel.writeString(foto_pelanggan);
+		parcel.writeString(updated_at);
+		parcel.writeString(kode);
+		parcel.writeString(no_ktp);
+		parcel.writeInt(id);
+		parcel.writeString(longitude);
+		parcel.writeString(jenis_pelanggan);
+		parcel.writeString(prov_id);
+		parcel.writeString(label_lokasi);
+		parcel.writeString(foto_ktp);
+		parcel.writeString(alamat);
+		parcel.writeString(kel_id);
+		parcel.writeString(nama);
+		parcel.writeString(pekerjaan);
+		parcel.writeString(tanggal);
+		parcel.writeString(kota_id);
+		parcel.writeString(status);
 	}
 }

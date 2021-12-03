@@ -1,5 +1,6 @@
 package com.baadalletta.app.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -43,6 +44,7 @@ public class PesananHomeAdapter extends RecyclerView.Adapter<PesananHomeAdapter.
         return myHolderView;
     }
 
+    @SuppressLint("RecyclerView")
     @Override
     public void onBindViewHolder(@NonNull PesananHomeAdapter.MyHolderView holder, int position) {
 
@@ -76,7 +78,9 @@ public class PesananHomeAdapter extends RecyclerView.Adapter<PesananHomeAdapter.
         holder.rl_lihat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                context.startActivity(new Intent(context, DetailPesananActivity.class));
+                Intent intent = new Intent(context, DetailPesananActivity.class);
+                intent.putExtra("Extra_data", pesananArrayList.get(position));
+                context.startActivity(intent);
             }
         });
 

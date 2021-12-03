@@ -11,6 +11,8 @@ import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -19,6 +21,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -105,12 +108,24 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
             R.drawable.img_marker_10, R.drawable.img_marker_11, R.drawable.img_marker_12,
             R.drawable.img_marker_13, R.drawable.img_marker_14, R.drawable.img_marker_15};
 
+    private Animation slide_up;
+    private Animation slide_down;
+
+    private CardView cv_slide_up;
+    private ImageView img_back_slide_up;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        slide_up = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_up);
+        slide_down = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_down);
 
         sliding_layout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
+
+        img_back_slide_up = findViewById(R.id.img_back_slide_up);
+        cv_slide_up = findViewById(R.id.cv_slide_up);
+        cv_slide_up.setVisibility(View.GONE);
 
         img_power = findViewById(R.id.img_power);
         tv_power = findViewById(R.id.tv_power);
@@ -119,6 +134,14 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         assert mapFragment != null;
         mapFragment.getMapAsync(this);
+
+        img_back_slide_up.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cv_slide_up.startAnimation(slide_up);
+                cv_slide_up.setVisibility(View.GONE);
+            }
+        });
 
         ll_power.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -212,6 +235,14 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             }
 
+            cv_slide_up.setVisibility(View.VISIBLE);
+            cv_slide_up.startAnimation(slide_down);
+
+        } else {
+            if (cv_slide_up.getVisibility() == View.VISIBLE) {
+                cv_slide_up.startAnimation(slide_up);
+                cv_slide_up.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -221,8 +252,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         polyOptions.strokeColor(Color.BLUE);
         polyOptions.strokeWidth(5);
         for (int i = 0; i < pesananArrayList.size(); i++) {
-            Customer customer = new Customer();
-            customer = pesananArrayList.get(i).getCustomer();
+            Customer customer =  pesananArrayList.get(i).getCustomer();
             if (!customer.getLatitude().equals("-") || (customer.getLatitude() != null)) {
                 double latitude_pelanggan = Double.parseDouble(customer.getLatitude());
                 double longitude_pelanggan = Double.parseDouble(customer.getLongitude());
@@ -377,7 +407,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         double latitude_pelanggan_click = Double.parseDouble(customer.getLatitude());
         double longitude_pelanggan_click = Double.parseDouble(customer.getLongitude());
         map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude_pelanggan_click,
-                longitude_pelanggan_click), 16));
+                longitude_pelanggan_click), 15));
         showPanel();
     }
 

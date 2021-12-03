@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/ColorPrimary"
     tools:context=".ui.HomeActivity">
 
     <RelativeLayout
@@ -75,7 +75,7 @@
             android:gravity="bottom"
             sothree:umanoDragView="@+id/rl_sliding_up"
             sothree:umanoOverlay="true"
-            sothree:umanoPanelHeight="200dp"
+            sothree:umanoPanelHeight="100dp"
             sothree:umanoParallaxOffset="100dp"
             sothree:umanoScrollableView="@+id/rv_pesanan_home"
             sothree:umanoShadowHeight="4dp">
@@ -89,7 +89,91 @@
                     android:name="com.google.android.gms.maps.SupportMapFragment"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="200dp" />
+                    android:layout_marginBottom="100dp" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cv_slide_up"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginTop="16dp"
+                    app:cardCornerRadius="6dp"
+                    app:cardElevation="6dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:paddingBottom="10dp">
+
+                        <ImageView
+                            android:id="@+id/img_back_slide_up"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="16dp"
+                            android:layout_marginTop="10dp"
+                            android:src="@drawable/ic_baseline_arrow_back_24"
+                            app:tint="@color/black2" />
+
+                        <TextView
+                            android:id="@+id/tv_kode"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/black2"
+                            android:layout_marginTop="10dp"
+                            android:layout_toRightOf="@id/img_back_slide_up"
+                            android:text="Kode : C-GE05-001"
+                            android:textSize="16dp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tv_jarak"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/tv_kode"
+                            android:layout_alignLeft="@id/tv_kode"
+                            android:layout_marginTop="10dp"
+                            android:text="Jarak : 2.4 Km"
+                            android:textColor="@color/ColorPrimary"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/tv_kode"
+                            android:layout_marginHorizontal="16dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_toRightOf="@id/tv_jarak"
+                            android:text="Waktu : 10 menit"
+                            android:textColor="@color/ColorPrimary"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+                        <RelativeLayout
+                            android:id="@+id/rl_lihat"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginHorizontal="10dp"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/bg_primary_radius"
+                            android:paddingHorizontal="12dp"
+                            android:paddingVertical="4dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Lihat"
+                                android:textColor="@color/white"
+                                android:textStyle="bold" />
+
+                        </RelativeLayout>
+
+                    </RelativeLayout>
+
+                </androidx.cardview.widget.CardView>
+
 
             </RelativeLayout>
 
@@ -127,7 +211,7 @@
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="10dp"
                     android:text="Pengantara"
-                    android:textColor="@color/ColorPrimary"
+                    android:textColor="@color/white"
                     android:textStyle="bold" />
 
                 <androidx.recyclerview.widget.RecyclerView

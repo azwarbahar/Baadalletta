@@ -14,10 +14,20 @@
         android:layout_height="wrap_content"
         android:background="@color/ColorPrimary"
         app:theme="@style/ToolbarTheme"
-        app:title="Kembali"
+        app:title="Detail Pesanan"
         app:titleTextColor="@color/white" />
 
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/rl_bottom"
+        android:layout_below="@id/rl_top"
+        android:layout_marginTop="-15dp" />
+
     <RelativeLayout
+        android:id="@+id/rl_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/toolbar"
@@ -33,13 +43,13 @@
             android:layout_marginRight="16dp"
             android:src="@drawable/icon_delivery_stop" />
 
-
         <TextView
             android:id="@+id/tv1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/img_1"
             android:text="Alamat"
+            android:layout_marginTop="10dp"
             android:textColor="@color/white2"
             android:textSize="12sp" />
 
@@ -53,6 +63,7 @@
             android:maxLines="2"
             android:text="@string/alamat"
             android:textColor="@color/white"
+            android:textSize="12sp"
             android:textStyle="bold" />
 
         <View
@@ -70,13 +81,14 @@
             android:layout_below="@id/view1"
             android:layout_marginLeft="6dp"
             android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:text="Jarak : 2.4Km"
             android:textColor="@color/white"
             android:textSize="16sp"
-            android:layout_marginBottom="10dp"
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/tv_waktu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignTop="@id/tv_jarak"
@@ -87,6 +99,109 @@
             android:textSize="16sp"
             android:textStyle="bold" />
 
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_alignParentBottom="true"
+        android:id="@+id/rl_bottom"
+        android:background="@color/ColorPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv2"
+            android:textSize="12sp"
+            android:layout_marginTop="16dp"
+            android:textColor="@color/white"
+            android:layout_marginHorizontal="16dp"
+            android:text="Pelanggan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/tv_kode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv2"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_success"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="5dp"
+            android:text="Kode : C-GE05-001"
+            android:textColor="@color/doneText"
+            android:textSize="16dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_nama"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_kode"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="15dp"
+            android:text="Nama : Muhammad Azwar bahar"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_whatsapp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_nama"
+            android:layout_marginHorizontal="16dp"
+            android:text="Whatsapp : 08xxxxxxxxx"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/img_whatsapp"
+            android:src="@drawable/icon_whatsapp"
+            android:layout_alignParentRight="true"
+            android:layout_width="35dp"
+            android:layout_above="@id/rl_mulai"
+            android:layout_marginHorizontal="16dp"
+            android:layout_height="35dp"/>
+
+        <ImageView
+            android:id="@+id/img_foto"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_above="@id/img_whatsapp"
+            android:layout_alignParentRight="true"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="10dp"
+            android:src="@drawable/ic_baseline_collections_24"
+            app:tint="@color/white" />
+
+        <RelativeLayout
+            android:id="@+id/rl_mulai"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_whatsapp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/bg_mulai_btn"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="6dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_baseline_navigation_24"
+                app:tint="@color/white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:text="Mulai"
+                android:textColor="@color/white"
+                android:textSize="16dp"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
 
     </RelativeLayout>
 
