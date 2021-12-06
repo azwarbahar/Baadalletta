@@ -5,6 +5,10 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import androidx.core.content.ContextCompat;
+
+import com.baadalletta.app.R;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
 
@@ -74,14 +78,14 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
                 lineOptions.color(Color.MAGENTA);
             } else {
                 lineOptions.width(8);
-                lineOptions.color(Color.BLUE);
+                lineOptions.color(Color.parseColor("#0187C6"));
             }
             Log.d("mylog", "onPostExecute lineoptions decoded");
         }
 
         // Drawing polyline in the Google Map for the i-th route
         if (lineOptions != null) {
-            //mMap.addPolyline(lineOptions);
+//            mMaps.addPolyline(lineOptions);
             taskCallback.onTaskDone(lineOptions);
 
         } else {

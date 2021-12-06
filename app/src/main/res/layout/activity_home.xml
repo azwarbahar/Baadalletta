@@ -75,7 +75,7 @@
             android:gravity="bottom"
             sothree:umanoDragView="@+id/rl_sliding_up"
             sothree:umanoOverlay="true"
-            sothree:umanoPanelHeight="100dp"
+            sothree:umanoPanelHeight="120dp"
             sothree:umanoParallaxOffset="100dp"
             sothree:umanoScrollableView="@+id/rv_pesanan_home"
             sothree:umanoShadowHeight="4dp">
@@ -89,7 +89,7 @@
                     android:name="com.google.android.gms.maps.SupportMapFragment"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="100dp" />
+                    android:layout_marginBottom="120dp" />
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cv_slide_up"
@@ -173,6 +173,47 @@
                     </RelativeLayout>
 
                 </androidx.cardview.widget.CardView>
+
+
+                <ImageView
+                    android:id="@+id/btn_jenis_map"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_below="@id/cv_slide_up"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/bg_bulat_putih"
+                    android:elevation="8dp"
+                    android:padding="6dp"
+                    android:src="@drawable/ic_baseline_layers_24"
+                    app:tint="@color/white" />
+
+                <LinearLayout
+                    android:id="@+id/ll_refresh"
+                    android:background="@drawable/bg_primary_radius"
+                    android:layout_below="@id/cv_slide_up"
+                    android:layout_width="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="4dp"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:src="@drawable/ic_baseline_refresh_24"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        app:tint="@color/white" />
+
+                    <TextView
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        android:text="Refresh"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
 
 
             </RelativeLayout>

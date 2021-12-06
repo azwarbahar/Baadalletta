@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,10 +17,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.baadalletta.app.R;
 import com.baadalletta.app.models.Customer;
 import com.baadalletta.app.models.Pesanan;
+import com.baadalletta.app.models.ResponsCustomer;
+import com.baadalletta.app.network.ApiClient;
+import com.baadalletta.app.network.ApiInterface;
 import com.baadalletta.app.ui.DetailPesananActivity;
 import com.baadalletta.app.utils.Constanta;
 
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class PesananHomeAdapter extends RecyclerView.Adapter<PesananHomeAdapter.MyHolderView> {
 
@@ -48,32 +56,55 @@ public class PesananHomeAdapter extends RecyclerView.Adapter<PesananHomeAdapter.
     @Override
     public void onBindViewHolder(@NonNull PesananHomeAdapter.MyHolderView holder, int position) {
 
-        customer = pesananArrayList.get(position).getCustomer();
+        String customer_id = String.valueOf(pesananArrayList.get(position).getId_customer());
 
-        String lat = customer.getLatitude();
-        String lon = customer.getLongitude();
-        Location loc1 = new Location("");
-        loc1.setLatitude(Double.parseDouble(Constanta.LATITUDE_BAADALLETTA));
-        loc1.setLongitude(Double.parseDouble(Constanta.LONGITUDE_BAADALLETTA));
-        Location loc2 = new Location("");
-        loc2.setLatitude(Double.parseDouble(lat));
-        loc2.setLongitude(Double.parseDouble(lon));
-        float distanceInMeters = loc1.distanceTo(loc2)/1000;
-        float distanceInKilometers = loc1.distanceTo(loc2)/1000;
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Call<ResponsCustomer> responsCustomerCall = apiInterface.getCustomerId(customer_id);
+        responsCustomerCall.enqueue(new Callback<ResponsCustomer>() {
+            @Override
+            public void onResponse(Call<ResponsCustomer> call, Response<ResponsCustomer> response) {
+                if (response.isSuccessful()){
+                    String kode = String.valueOf(response.body().getStatus_code());
+                    if (kode.equals("200")){
 
-        String jarak_subs = String.valueOf(distanceInKilometers).substring(0,1);
-        if (jarak_subs.equals("0")){
-            String jarak_meter = String.valueOf(distanceInMeters).substring(0,5);
-            holder.tv_jarak.setText(jarak_meter+ " Meter");
-        } else {
-            String jarak_meter = String.valueOf(distanceInKilometers).substring(0,4);
-            holder.tv_jarak.setText(jarak_meter+ " Km");
-        }
+                        customer = response.body().getData();
+                        String lat = customer.getLatitude();
+                        String lon = customer.getLongitude();
+                        Location loc1 = new Location("");
+                        loc1.setLatitude(Double.parseDouble(Constanta.LATITUDE_BAADALLETTA));
+                        loc1.setLongitude(Double.parseDouble(Constanta.LONGITUDE_BAADALLETTA));
+                        Location loc2 = new Location("");
+                        loc2.setLatitude(Double.parseDouble(lat));
+                        loc2.setLongitude(Double.parseDouble(lon));
+                        float distanceInMeters = loc1.distanceTo(loc2)/1000;
+                        float distanceInKilometers = loc1.distanceTo(loc2)/1000;
 
-        holder.tv_nomor.setText(String.valueOf(position + 1));
-        holder.tv_alamat.setText(customer.getAlamat());
-        holder.tv_nama.setText("Nama : " + customer.getNama());
-        holder.tv_kode.setText("Kode : " + customer.getKode());
+                        String jarak_subs = String.valueOf(distanceInKilometers).substring(0,1);
+                        if (jarak_subs.equals("0")){
+                            String jarak_meter = String.valueOf(distanceInMeters).substring(0,5);
+                            holder.tv_jarak.setText(jarak_meter+ " Meter");
+                        } else {
+                            String jarak_meter = String.valueOf(distanceInKilometers).substring(0,4);
+                            holder.tv_jarak.setText(jarak_meter+ " Km");
+                        }
+
+                        holder.tv_nomor.setText(String.valueOf(position + 1));
+                        holder.tv_alamat.setText(customer.getAlamat());
+                        holder.tv_nama.setText("Nama : " + customer.getNama());
+                        holder.tv_kode.setText("Kode : " + customer.getKode());
+
+
+                    } else {
+                        Toast.makeText(context, "Data Customer tidak ditemukan", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponsCustomer> call, Throwable t) {
+
+            }
+        });
 
         holder.rl_lihat.setOnClickListener(new View.OnClickListener() {
             @Override

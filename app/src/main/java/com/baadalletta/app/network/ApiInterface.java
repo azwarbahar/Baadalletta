@@ -1,5 +1,7 @@
 package com.baadalletta.app.network;
 
+import com.baadalletta.app.models.ResponsCustomer;
+import com.baadalletta.app.models.ResponsPesanan;
 import com.baadalletta.app.models.ResponsePesananKurir;
 import com.baadalletta.app.models.maps.Result;
 
@@ -17,9 +19,17 @@ public interface ApiInterface {
     Call<ResponsePesananKurir> getPesananMaps(@Path("kurir_id") String kurir_id,
                                               @Query("status_pesanan") String status_pesanan);
 
+    @POST("kurir/set-pesanan-status/kurir/{pesanan_id}")
+    Call<ResponsPesanan> setPesananKurir(@Path("pesanan_id") String pesanan_id,
+                                         @Query("status_pesanan") String status_pesanan,
+                                         @Query("id_kurir") int id_kurir);
+
     // PESANAN
     @GET("kurir/get-pesanan/{kurir_id}")
     Call<ResponsePesananKurir> getPesananIdKurir(@Path("kurir_id") String kurir_id);
+
+    //
+
 
     // MAPS
     @GET("maps/api/directions/json")
@@ -28,5 +38,10 @@ public interface ApiInterface {
                               @Query("origin") String origin,
                               @Query("destination") String destination,
                               @Query("key") String key);
+
+
+    // GET CUSTOMER
+    @GET("kurir/get-customer/byId/{customer_id}")
+    Call<ResponsCustomer> getCustomerId(@Path("customer_id") String customer_id);
 
 }

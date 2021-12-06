@@ -56,6 +56,8 @@ public class Customer implements Parcelable {
 
 	private String status;
 
+	private KategoriPelanggan kategori_pelanggan;
+
 	protected Customer(Parcel in) {
 		whatsapp = in.readString();
 		distance = in.readString();
@@ -82,6 +84,7 @@ public class Customer implements Parcelable {
 		tanggal = in.readString();
 		kota_id = in.readString();
 		status = in.readString();
+		kategori_pelanggan = in.readParcelable(KategoriPelanggan.class.getClassLoader());
 	}
 
 	public static final Creator<Customer> CREATOR = new Creator<Customer>() {
@@ -196,6 +199,10 @@ public class Customer implements Parcelable {
 		return status;
 	}
 
+	public KategoriPelanggan getKategori_pelanggan() {
+		return kategori_pelanggan;
+	}
+
 	@Override
 	public int describeContents() {
 		return 0;
@@ -228,5 +235,6 @@ public class Customer implements Parcelable {
 		parcel.writeString(tanggal);
 		parcel.writeString(kota_id);
 		parcel.writeString(status);
+		parcel.writeParcelable(kategori_pelanggan, i);
 	}
 }
