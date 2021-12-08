@@ -3,5 +3,15 @@
     <string name="key_maps">AIzaSyDV6TkgOG03jL2sEnUP7umqQ3qeJtyVK_M</string>
     <string name="alamat">Jl. Toddopuli Raya 24-14, Pandang, Kec. Panakkukang, Kota Makassar, Sulawesi Selatan 90222</string>
 
+    <!-- font families -->
+    <string name="font_family_light">sans-serif-light</string>
+    <string name="font_family_medium">sans-serif-medium</string>
+    <string name="font_family_regular">sans-serif</string>
+    <string name="font_family_condensed">sans-serif-condensed</string>
+    <string name="font_family_black">sans-serif-black</string>
+    <string name="font_family_thin">sans-serif-thin</string>
+    <string name="dialog_permission_title">Grant Permissions</string>
+    <string name="dialog_permission_message">This app needs permission to use this feature. You can grant them in app settings.</string>
+    <string name="go_to_settings">GOTO SETTINGS</string>
 
 </resources>

@@ -119,10 +119,10 @@
                             android:id="@+id/tv_kode"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/black2"
                             android:layout_marginTop="10dp"
                             android:layout_toRightOf="@id/img_back_slide_up"
                             android:text="Kode : C-GE05-001"
+                            android:textColor="@color/black2"
                             android:textSize="16dp"
                             android:textStyle="bold" />
 
@@ -139,6 +139,7 @@
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/tv_waktu"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/tv_kode"

@@ -19,6 +19,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +32,13 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.akexorcist.googledirection.DirectionCallback;
+import com.akexorcist.googledirection.GoogleDirection;
+import com.akexorcist.googledirection.constant.AvoidType;
+import com.akexorcist.googledirection.constant.TransportMode;
+import com.akexorcist.googledirection.model.Direction;
+import com.akexorcist.googledirection.model.Leg;
+import com.akexorcist.googledirection.util.DirectionConverter;
 import com.baadalletta.app.BuildConfig;
 import com.baadalletta.app.R;
 import com.baadalletta.app.adapter.PesananHomeAdapter;
@@ -41,7 +49,13 @@ import com.baadalletta.app.models.Pesanan;
 import com.baadalletta.app.models.ResponsCustomer;
 import com.baadalletta.app.models.ResponsPesanan;
 import com.baadalletta.app.models.ResponsePesananKurir;
+import com.baadalletta.app.models.maps.distance.Distance;
+import com.baadalletta.app.models.maps.distance.Duration;
+import com.baadalletta.app.models.maps.distance.ElementsItem;
+import com.baadalletta.app.models.maps.distance.ResponseDistanceMaps;
+import com.baadalletta.app.models.maps.distance.RowsItem;
 import com.baadalletta.app.network.ApiClient;
+import com.baadalletta.app.network.ApiClientMaps;
 import com.baadalletta.app.network.ApiInterface;
 import com.baadalletta.app.utils.Constanta;
 import com.blikoon.qrcodescanner.QrCodeActivity;
@@ -64,7 +78,6 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.material.snackbar.Snackbar;
@@ -95,11 +108,13 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         PesananHomeAdapter.PesananListRecyclerClickListener {
 
     private PolylineOptions polyOptions = new PolylineOptions();
+    Polyline polylineOptions_final = null;
 
     private GoogleMap map;
     private Polyline currentPolyline;
 
     private LatLng latling_baadalletta;
+    private Marker marker_baadaletta;
 
     private ImageView img_user;
     private ImageView img_qr_code;
@@ -140,6 +155,12 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Animation slide_down;
 
     private CardView cv_slide_up;
+    private TextView tv_kode;
+    private TextView tv_jarak;
+    private TextView tv_waktu;
+    private RelativeLayout rl_lihat;
+    private String selected_marker;
+
     private ImageView img_back_slide_up;
     private ImageView btn_jenis_map;
     private static final int REQUEST_CODE_QR_SCAN = 101;
@@ -155,6 +176,11 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         slide_down = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_down);
 
         sliding_layout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
+
+        tv_kode = findViewById(R.id.tv_kode);
+        tv_jarak = findViewById(R.id.tv_jarak);
+        tv_waktu = findViewById(R.id.tv_waktu);
+        rl_lihat = findViewById(R.id.rl_lihat);
 
         ll_refresh = findViewById(R.id.ll_refresh);
         btn_jenis_map = findViewById(R.id.btn_jenis_map);
@@ -178,13 +204,24 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-        ll_refresh.setVisibility(View.GONE);
+//        ll_refresh.setVisibility(View.GONE);
         ll_refresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 map.clear();
-                latLngList.clear();
-                pesananArrayList.clear();
+//                        pesananArrayList.add(response.body().getData());
+//                        latling_baadalletta = null;
+//                position_hashap.clear();
+//                markerMapPesanan.clear();
+//                latLngList.clear();
+//                polylines.clear();
+//                marker_list.clear();
+//                initMapsBaadalletta2();
+//                laodDataPesanan("6");
+//                map.clear();
+//                latLngList.clear();
+//                pesananArrayList.clear();
                 mapFragment.getMapAsync(HomeActivity.this);
                 laodDataPesanan("6");
             }
@@ -246,6 +283,31 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(HomeActivity.this, AkunActivity.class));
+            }
+        });
+        rl_lihat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (selected_marker != null) {
+
+//                    Toast.makeText(HomeActivity.this, selected_marker, Toast.LENGTH_SHORT).show();
+                    for (int a = 0; a < pesananArrayList.size(); a++) {
+                        String id = String.valueOf(pesananArrayList.get(a).getId());
+                        if (id.equals(selected_marker)) {
+                            Intent intent = new Intent(HomeActivity.this, DetailPesananActivity.class);
+                            intent.putExtra("Extra_data", pesananArrayList.get(a));
+                            startActivity(intent);
+                            break;
+                        } else {
+//                            Toast.makeText(HomeActivity.this, "Terjadi Kesalahan", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                } else {
+//                    Toast.makeText(HomeActivity.this, "Terjadi Kesalahan", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
 
@@ -324,13 +386,14 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
                     if (kode.equals("200")) {
                         map.clear();
 //                        pesananArrayList.add(response.body().getData());
-                        latling_baadalletta = null;
-                        position_hashap.clear();
-                        markerMapPesanan.clear();
-                        latLngList.clear();
-                        polylines.clear();
-                        marker_list.clear();
-                        initMapsBaadalletta();
+//                        latling_baadalletta = null;
+//                        position_hashap.clear();
+//                        markerMapPesanan.clear();
+//                        latLngList.clear();
+//                        polylines.clear();
+//                        marker_list.clear();
+//                        initMapsBaadalletta2();
+//                        laodDataPesanan("6");
                         laodDataPesanan("6");
 
 
@@ -350,7 +413,6 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
     }
-
 
     private void clickjenisMap(View view) {
 
@@ -440,13 +502,14 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if (response.isSuccessful()) {
                     int status_code = response.body().getStatus_code();
                     if (status_code == 200) {
+//                        pesananArrayList.clear();
                         pesananArrayList = (ArrayList<Pesanan>) response.body().getData();
                         rv_pesanan_home.setLayoutManager(new LinearLayoutManager(HomeActivity.this));
                         pesananHomeAdapter = new PesananHomeAdapter(HomeActivity.this, pesananArrayList, HomeActivity.this);
                         rv_pesanan_home.setAdapter(pesananHomeAdapter);
                         initMapsPesanan(pesananArrayList);
 
-                        Toast.makeText(HomeActivity.this, "Pesan : " + response.body().getMessage(), Toast.LENGTH_LONG).show();
+//                        Toast.makeText(HomeActivity.this, "Pesan : " + response.body().getMessage(), Toast.LENGTH_LONG).show();
                     } else {
                         Toast.makeText(HomeActivity.this, "Kode = " + status_code + " and Pesan : " + response.body().getMessage(), Toast.LENGTH_LONG).show();
                     }
@@ -469,29 +532,77 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         if (markerMapPesanan.get(marker.getId()) != null) {
             Pesanan pesanan = markerMapPesanan.get(marker.getId());
+            selected_marker = String.valueOf(pesanan.getId());
+            builder_item.include(marker_baadaletta.getPosition());
             builder_item.include(marker.getPosition());
-            builder_item.include(marker_list.get(0).getPosition());
 
-            LatLngBounds bounds = builder_item.build();
+            LatLngBounds bounds1 = builder_item.build();
             int width = getResources().getDisplayMetrics().widthPixels;
             int height = getResources().getDisplayMetrics().heightPixels;
             int padding = (int) (width * 0.16); // offset from edges of the map 10% of screen
 
-            CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding);
+            CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds1, width, height, padding);
             map.animateCamera(cu);
             for (int i = 0; i < marker_list.size(); i++) {
                 if (position_hashap.get(i).equals(marker.getId())) {
-//                    for(Polyline line : polylines)
-//                    {
-//                        line.remove();
-//                    }
-//                    polylines.clear();
-                    new FetchURL(HomeActivity.this).execute(getUrl(marker_list.get(0).getPosition(),
-                            marker_list.get(i + 1).getPosition(), "driving"), "driving");
+//                    new FetchURL(HomeActivity.this).execute(getUrl(marker_list.get(0).getPosition(),
+//                            marker_list.get(i + 1).getPosition(), "driving"), "driving");
                     break;
                 }
             }
 
+//            String lat = String.valueOf();
+//            String longi = String.valueOf(marker.getPosition().latitude);
+            String latling_distance = pesanan.getTitik_koordinat();
+//            Toast.makeText(HomeActivity.this, latling_distance, Toast.LENGTH_SHORT).show();
+
+            String lat_ba = Constanta.LATITUDE_BAADALLETTA;
+            String longi_ba = Constanta.LONGITUDE_BAADALLETTA;
+            String latling_origin = lat_ba + "," + longi_ba;
+
+            ApiInterface apiInterface2 = ApiClientMaps.getClient().create(ApiInterface.class);
+            Call<ResponseDistanceMaps> responseDistanceMapsCall = apiInterface2.getDirectionMatrix(latling_origin,
+                    latling_distance, BuildConfig.API_KEY_MAPS);
+            responseDistanceMapsCall.enqueue(new Callback<ResponseDistanceMaps>() {
+                @Override
+                public void onResponse(Call<ResponseDistanceMaps> call, Response<ResponseDistanceMaps> response) {
+//
+//                    if (response.isSuccessful()){
+//                        Toast.makeText(HomeActivity.this, "Sukses", Toast.LENGTH_SHORT).show();
+//                    } else {
+//                        Toast.makeText(HomeActivity.this, "gagal", Toast.LENGTH_SHORT).show();
+//                    }
+
+                    String status = response.body().getStatus();
+//                    Toast.makeText(HomeActivity.this, status, Toast.LENGTH_SHORT).show();
+                    if (status.equals("OK")) {
+                        List<RowsItem> rowsItem = response.body().getRows();
+                        for (int a = 0; a < rowsItem.size(); a++) {
+                            List<ElementsItem> elementsItem = rowsItem.get(a).getElements();
+                            if (elementsItem.get(a).getStatus().equals("OK")) {
+                                for (int b = 0; b < elementsItem.size(); b++) {
+
+                                    Distance distance = elementsItem.get(b).getDistance();
+                                    String jarak = distance.getText();
+                                    tv_jarak.setText("Jarak : " + jarak);
+
+
+                                    Duration duration = elementsItem.get(b).getDuration();
+                                    String waktu = duration.getText();
+                                    tv_waktu.setText("Waktu : " + waktu);
+                                }
+                            }
+                        }
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseDistanceMaps> call, Throwable t) {
+
+                    Toast.makeText(HomeActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
             cv_slide_up.setVisibility(View.VISIBLE);
             cv_slide_up.startAnimation(slide_down);
 
@@ -504,70 +615,165 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void initMapsPesanan(ArrayList<Pesanan> pesananArrayList) {
-//        PolygonOptions polyOptions = new PolygonOptions();
-//        polyOptions.strokeColor(Color.BLUE);
-//        polyOptions.strokeWidth(5);
         int number_marker = 0;
-        final int[] first_poly = {0};
+        int first_poly = 0;
+        latLngList.clear();
+        marker_list.clear();
+        position_hashap.clear();
+        markerMapPesanan.clear();
         for (int i = 0; i < pesananArrayList.size(); i++) {
             String customer_id = String.valueOf(pesananArrayList.get(i).getId_customer());
-            ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-            Call<ResponsCustomer> responsCustomerCall = apiInterface.getCustomerId(customer_id);
-            int finalNumber_marker = number_marker;
-            int finalI = i;
-            responsCustomerCall.enqueue(new Callback<ResponsCustomer>() {
-                @Override
-                public void onResponse(Call<ResponsCustomer> call, Response<ResponsCustomer> response) {
-                    if (response.isSuccessful()) {
-                        String kode = String.valueOf(response.body().getStatus_code());
-                        if (kode.equals("200")) {
-                            Customer customer = response.body().getData();
-                            if (!customer.getLatitude().equals("-") || (customer.getLatitude() != null)) {
-                                double latitude_pelanggan = Double.parseDouble(customer.getLatitude());
-                                double longitude_pelanggan = Double.parseDouble(customer.getLongitude());
-                                Marker marker = map.addMarker(new MarkerOptions().title("Rumah Pelanggan")
-                                        .icon(bitmapDescriptor(HomeActivity.this, finalNumber_marker))
-                                        .position(new LatLng(latitude_pelanggan, longitude_pelanggan)));
-                                latLngList.add(new LatLng(latitude_pelanggan, longitude_pelanggan));
-                                marker_list.add(marker);
-                                builder.include(marker.getPosition());
-//                                polyOptions.add(new LatLng(latitude_pelanggan, longitude_pelanggan));
-                                String idmark = marker.getId();
-                                position_hashap.add(idmark);
-                                markerMapPesanan.put(idmark, pesananArrayList.get(finalNumber_marker));
 
-                                if (first_poly[0] == 0) {
-                                    first_poly[0] = 1;
-                                    Findroutes(latling_baadalletta, latLngList.get(finalI));
+            String titik_koordinat = pesananArrayList.get(i).getTitik_koordinat();
+            double latitude_pelanggan = Double.parseDouble(titik_koordinat.substring(0, titik_koordinat.lastIndexOf(",")));
+            double longitude_pelanggan = Double.parseDouble(titik_koordinat.substring(titik_koordinat.lastIndexOf(",") + 1));
+
+//            Toast.makeText(HomeActivity.this, "Latitude : " + latitude_pelanggan + " AND Longitude : " + longitude_pelanggan, Toast.LENGTH_LONG).show();
+            Marker marker = map.addMarker(new MarkerOptions().title("Rumah Pelanggan")
+                    .icon(bitmapDescriptor(HomeActivity.this, i))
+                    .position(new LatLng(latitude_pelanggan, longitude_pelanggan)));
+            latLngList.add(new LatLng(latitude_pelanggan, longitude_pelanggan));
+            marker_list.add(marker);
+            builder.include(marker.getPosition());
+//            polyOptions.add(new LatLng(latitude_pelanggan, longitude_pelanggan));
+            String idmark = marker.getId();
+            position_hashap.add(idmark);
+            markerMapPesanan.put(idmark, pesananArrayList.get(i));
+
+//            Toast.makeText(HomeActivity.this, "Jumlah LatList = "+latLngList.size(), Toast.LENGTH_LONG).show();
+
+
+            if (first_poly == 0) {
+                first_poly = 1;
+//                Findroutes(latling_baadalletta, latLngList.get(i));
+//                Log.d("Latling", latling_baadalletta.toString());
+
+
+                GoogleDirection.withServerKey(BuildConfig.API_KEY_MAPS)
+                        .from(latling_baadalletta)
+                        .to(latLngList.get(i))
+                        .transportMode(TransportMode.DRIVING)
+                        .avoid(AvoidType.FERRIES)
+                        .avoid(AvoidType.HIGHWAYS)
+                        .execute(new DirectionCallback() {
+                            @Override
+                            public void onDirectionSuccess(@Nullable Direction direction) {
+                                Toast.makeText(HomeActivity.this, "Sukses", Toast.LENGTH_SHORT).show();
+
+
+                                Log.d("eeeeee", direction.getStatus());
+
+                                if (direction.isOK()) {
+                                    // Do something
+                                    com.akexorcist.googledirection.model.Route route = direction.getRouteList().get(0);
+                                    Leg leg = route.getLegList().get(0);
+
+                                    ArrayList<LatLng> directionPositionList = leg.getDirectionPoint();
+                                    Log.d("eeeeee", directionPositionList.size() + "eeeeee");
+
+//                                if (polylineOptions_final != null)
+//                                {
+//                                    polylineOptions_final.remove();
+//                                }
+                                    PolylineOptions polylineOptions = DirectionConverter.createPolyline(getApplication(),
+                                            directionPositionList, 5, Color.parseColor("#0187C6"));
+                                    polylineOptions_final = map.addPolyline(polylineOptions);
                                 } else {
-//                                    if (finalI > 1) {
-                                    Findroutes(latLngList.get(finalI - 1), latLngList.get(finalI));
-//                                    }
+                                    // Do something
                                 }
+//                        Log.d("eeeeee"+direction.getGeocodedWaypointList().toString(), "onDirectionSuccess: ");
 
-                                LatLngBounds bounds = builder.build();
-                                int width = getResources().getDisplayMetrics().widthPixels;
-                                int height = getResources().getDisplayMetrics().heightPixels;
-                                int padding = (int) (width * 0.16); // offset from edges of the map 10% of screen
+//                            direction.getRouteList().get(0).;
+//                            PolylineOptions options = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);
+//                            for (int z = 0; z < list.size(); z++) {
+//                                LatLng point = list.get(z);
+//                                options.add(point);
+//                            }
+//                            line = myMap.addPolyline(options);
 
-                                CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding);
-                                map.animateCamera(cu);
                             }
-                        } else {
-                            Toast.makeText(HomeActivity.this, "Data Customer tidak ditemukan", Toast.LENGTH_SHORT).show();
-                        }
 
-                    }
-                }
+                            @Override
+                            public void onDirectionFailure(@NonNull Throwable t) {
+                                Toast.makeText(HomeActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
 
-                @Override
-                public void onFailure(Call<ResponsCustomer> call, Throwable t) {
+                            }
+                        });
 
-                }
-            });
-            number_marker++;
+            } else {
+//                Log.d("Latling", latLngList.get(i - 1).toString());
+//
+//                if (latLngList.size() > 4) {
+//                    break;
+//                } else {
+//                    Findroutes(latLngList.get(i - 1), latLngList.get(i));
+//                }
+
+                GoogleDirection.withServerKey(BuildConfig.API_KEY_MAPS)
+                        .from(latLngList.get(i - 1))
+                        .to(latLngList.get(i))
+                        .transportMode(TransportMode.DRIVING)
+                        .avoid(AvoidType.FERRIES)
+                        .avoid(AvoidType.HIGHWAYS)
+                        .execute(new DirectionCallback() {
+                            @Override
+                            public void onDirectionSuccess(@Nullable Direction direction) {
+                                Toast.makeText(HomeActivity.this, "Sukses", Toast.LENGTH_SHORT).show();
+
+
+                                Log.d("eeeeee", direction.getStatus());
+
+                                if (direction.isOK()) {
+                                    // Do something
+                                    com.akexorcist.googledirection.model.Route route = direction.getRouteList().get(0);
+                                    Leg leg = route.getLegList().get(0);
+
+                                    ArrayList<LatLng> directionPositionList = leg.getDirectionPoint();
+                                    Log.d("eeeeee", directionPositionList.size() + "eeeeee");
+
+//                                if (polylineOptions_final != null)
+//                                {
+//                                    polylineOptions_final.remove();
+//                                }
+                                    PolylineOptions polylineOptions = DirectionConverter.createPolyline(getApplication(),
+                                            directionPositionList, 5, Color.parseColor("#8DADBC"));
+                                    polylineOptions_final = map.addPolyline(polylineOptions);
+                                } else {
+                                    // Do something
+                                }
+//                        Log.d("eeeeee"+direction.getGeocodedWaypointList().toString(), "onDirectionSuccess: ");
+
+//                            direction.getRouteList().get(0).;
+//                            PolylineOptions options = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);
+//                            for (int z = 0; z < list.size(); z++) {
+//                                LatLng point = list.get(z);
+//                                options.add(point);
+//                            }
+//                            line = myMap.addPolyline(options);
+
+                            }
+
+                            @Override
+                            public void onDirectionFailure(@NonNull Throwable t) {
+                                Toast.makeText(HomeActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+
+                            }
+                        });
+
+            }
+
+            LatLngBounds bounds = builder.build();
+            int width = getResources().getDisplayMetrics().widthPixels;
+            int height = getResources().getDisplayMetrics().heightPixels;
+            int padding = (int) (width * 0.16); // offset from edges of the map 10% of screen
+
+            CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding);
+            map.animateCamera(cu);
         }
-//        map.addPolygon(polyOptions);
+
+//        int last_list = latLngList.size() - 1;
+
+
     }
 
     private BitmapDescriptor bitmapDescriptor(Context context, int position) {
@@ -620,6 +826,17 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+    private void initMapsBaadalletta2() {
+        double latitude_baadalletta = Double.parseDouble(Constanta.LATITUDE_BAADALLETTA);
+        double longitude_baadalletta = Double.parseDouble(Constanta.LONGITUDE_BAADALLETTA);
+        Marker marker1 = map.addMarker(new MarkerOptions().icon(bitmapDescriptorBaadalletta(this))
+                .position(new LatLng(latitude_baadalletta, longitude_baadalletta)));
+        builder.include(marker1.getPosition());
+//        latling_baadalletta = new LatLng(latitude_baadalletta, longitude_baadalletta);
+        marker_list.add(0, marker1);
+        marker_baadaletta = marker1;
+    }
+
     private void initMapsBaadalletta() {
         double latitude_baadalletta = Double.parseDouble(Constanta.LATITUDE_BAADALLETTA);
         double longitude_baadalletta = Double.parseDouble(Constanta.LONGITUDE_BAADALLETTA);
@@ -628,6 +845,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         builder.include(marker1.getPosition());
         latling_baadalletta = new LatLng(latitude_baadalletta, longitude_baadalletta);
         marker_list.add(0, marker1);
+        marker_baadaletta = marker1;
     }
 
     @Override
@@ -754,7 +972,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onRoutingStart() {
-        Toast.makeText(HomeActivity.this, "Finding Route...", Toast.LENGTH_LONG).show();
+//        Toast.makeText(HomeActivity.this, "Finding Route...", Toast.LENGTH_LONG).show();
 
     }
 
@@ -769,6 +987,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         LatLng polylineStartLatLng = null;
         LatLng polylineEndLatLng = null;
 
+        polylines = null;
         polylines = new ArrayList<>();
         //add route(s) to the map using polyline
         for (int i = 0; i < arrayList.size(); i++) {
@@ -810,7 +1029,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
     // function to find Routes.
     public void Findroutes(LatLng Start, LatLng End) {
         if (Start == null || End == null) {
-            Toast.makeText(HomeActivity.this, "Unable to get location", Toast.LENGTH_LONG).show();
+//            Toast.makeText(HomeActivity.this, "Unable to get location", Toast.LENGTH_LONG).show();
         } else {
 
             Routing routing = new Routing.Builder()

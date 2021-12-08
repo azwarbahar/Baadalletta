@@ -56,6 +56,9 @@ dependencies {
     implementation 'org.greenrobot:eventbus:3.2.0'
     implementation 'com.github.jd-alexander:library:1.1.0'
 
+    // new
+    implementation 'com.akexorcist:google-direction-library:1.2.1'
+
     //library retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.7.1'
     implementation 'com.google.code.gson:gson:2.6.2'

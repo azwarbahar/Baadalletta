@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
         android:scaleType="fitCenter"
-        tools:src="@drawable/img_contoh_rumah" />
+        android:src="@drawable/img_contoh_rumah" />
 
     <ImageView
         android:id="@+id/img_close"

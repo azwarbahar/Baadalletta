@@ -4,6 +4,7 @@ import com.baadalletta.app.models.ResponsCustomer;
 import com.baadalletta.app.models.ResponsPesanan;
 import com.baadalletta.app.models.ResponsePesananKurir;
 import com.baadalletta.app.models.maps.Result;
+import com.baadalletta.app.models.maps.distance.ResponseDistanceMaps;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -38,6 +39,11 @@ public interface ApiInterface {
                               @Query("origin") String origin,
                               @Query("destination") String destination,
                               @Query("key") String key);
+
+    @GET("maps/api/distancematrix/json")
+    Call<ResponseDistanceMaps> getDirectionMatrix(@Query("origins") String origins,
+                                                  @Query("destinations") String destinations,
+                                                  @Query("key") String key);
 
 
     // GET CUSTOMER

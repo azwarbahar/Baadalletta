@@ -47,9 +47,9 @@
             android:id="@+id/tv1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:layout_toRightOf="@id/img_1"
             android:text="Alamat"
-            android:layout_marginTop="10dp"
             android:textColor="@color/white2"
             android:textSize="12sp" />
 
@@ -102,21 +102,21 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:layout_alignParentBottom="true"
         android:id="@+id/rl_bottom"
-        android:background="@color/ColorPrimary"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/ColorPrimary">
 
         <TextView
             android:id="@+id/tv2"
-            android:textSize="12sp"
-            android:layout_marginTop="16dp"
-            android:textColor="@color/white"
-            android:layout_marginHorizontal="16dp"
-            android:text="Pelanggan"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:text="Pelanggan"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/tv_kode"
@@ -156,12 +156,12 @@
 
         <ImageView
             android:id="@+id/img_whatsapp"
-            android:src="@drawable/icon_whatsapp"
-            android:layout_alignParentRight="true"
             android:layout_width="35dp"
+            android:layout_height="35dp"
             android:layout_above="@id/rl_mulai"
+            android:layout_alignParentRight="true"
             android:layout_marginHorizontal="16dp"
-            android:layout_height="35dp"/>
+            android:src="@drawable/icon_whatsapp" />
 
         <ImageView
             android:id="@+id/img_foto"
@@ -202,6 +202,103 @@
                 android:textStyle="bold" />
 
         </RelativeLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/continer_dialog"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/blackTrans">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginHorizontal="50dp"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="8dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="20dp">
+
+                <ImageView
+                    android:id="@+id/img_illust"
+                    android:layout_width="150dp"
+                    android:layout_height="120dp"
+                    android:layout_centerHorizontal="true"
+                    android:src="@drawable/img_bukti_foto" />
+
+                <TextView
+                    android:id="@+id/tv11"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/img_illust"
+                    android:layout_marginHorizontal="20dp"
+                    android:gravity="center_horizontal"
+                    android:text="Mengambil gambar sebagai bukti pengantaran pesanan"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/ll_foto"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv11"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginTop="30dp"
+                    android:background="@drawable/bg_btn_lapor"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingVertical="10dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="10dp"
+                        android:src="@drawable/ic_baseline_photo_camera_24"
+                        app:tint="@color/white" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Buka Kamera"
+                        android:textColor="@color/white"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_batal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/ll_foto"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/bg_btn_lapor_white"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingVertical="5dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="10dp"
+                        android:src="@drawable/ic_baseline_close_24"
+                        app:tint="@color/colorPrimaryDark" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Batal"
+                        android:textColor="@color/colorPrimaryDark" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+        </androidx.cardview.widget.CardView>
 
     </RelativeLayout>
 
