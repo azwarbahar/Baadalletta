@@ -44,9 +44,7 @@ import com.baadalletta.app.BuildConfig;
 import com.baadalletta.app.R;
 import com.baadalletta.app.SortPlaces;
 import com.baadalletta.app.adapter.PesananHomeAdapter;
-import com.baadalletta.app.directionhelper.FetchURL;
 import com.baadalletta.app.directionhelper.TaskLoadedCallback;
-import com.baadalletta.app.models.Customer;
 import com.baadalletta.app.models.Kurir;
 import com.baadalletta.app.models.Pesanan;
 import com.baadalletta.app.models.Place;
@@ -180,6 +178,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private Kurir kurir;
     private String kurir_id;
+    private String status_aski;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -230,7 +229,8 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onClick(View view) {
                 map.clear();
                 mapFragment.getMapAsync(HomeActivity.this);
-                laodDataPesanan("6");
+                laodDataPesanan(kurir_id);
+                laodDataKurur(kurir_id);
             }
         });
 
@@ -238,49 +238,54 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View view) {
 
-                String status_power = tv_power.getText().toString();
-                if (status_power.equals("Hidup")) {
-                    img_power.setColorFilter(ContextCompat.getColor(HomeActivity.this,
-                            R.color.black));
-                    tv_power.setText("Mati");
-                    tv_power.setTextColor(getResources().getColor(R.color.black));
-//                    Toast.makeText(HomeActivity.this, "Sedang Offline", Toast.LENGTH_SHORT).show();
+                if (pesananArrayList.size() > 0) {
+                    new SweetAlertDialog(HomeActivity.this, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("Opss..")
+                            .setContentText("Selesaikan pengantaran anda jika ingin Offline")
+                            .show();
                 } else {
-                    img_power.setColorFilter(ContextCompat.getColor(HomeActivity.this,
-                            R.color.white));
-                    tv_power.setText("Hidup");
-                    tv_power.setTextColor(getResources().getColor(R.color.white));
-//                    Toast.makeText(HomeActivity.this, "Sedang Online", Toast.LENGTH_SHORT).show();
+                    String status_power = tv_power.getText().toString();
+                    updateStatusAksi(status_power);
                 }
 
             }
         });
-
 
         img_qr_code = findViewById(R.id.img_qr_code);
         img_qr_code.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Dexter.withContext(getApplicationContext())
-                        .withPermission(Manifest.permission.CAMERA)
-                        .withListener(new PermissionListener() {
-                            @Override
-                            public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
-                                Intent intent = new Intent(HomeActivity.this, QrCodeActivity.class);
-                                startActivityForResult(intent, REQUEST_CODE_QR_SCAN);
-                            }
+                String status_power = tv_power.getText().toString();
+                if (status_power.equals("Hidup")) {
 
-                            @Override
-                            public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
-                                permissionDeniedResponse.getRequestedPermission();
-                            }
+                    Dexter.withContext(getApplicationContext())
+                            .withPermission(Manifest.permission.CAMERA)
+                            .withListener(new PermissionListener() {
+                                @Override
+                                public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
+                                    Intent intent = new Intent(HomeActivity.this, QrCodeActivity.class);
+                                    startActivityForResult(intent, REQUEST_CODE_QR_SCAN);
+                                }
 
-                            @Override
-                            public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
-                                permissionToken.continuePermissionRequest();
-                            }
-                        }).check();
+                                @Override
+                                public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
+                                    permissionDeniedResponse.getRequestedPermission();
+                                }
+
+                                @Override
+                                public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
+                                    permissionToken.continuePermissionRequest();
+                                }
+                            }).check();
+                } else {
+
+                    new SweetAlertDialog(HomeActivity.this, SweetAlertDialog.ERROR_TYPE)
+                            .setTitleText("Opss..")
+                            .setContentText("Sedang Mode Offline")
+                            .show();
+
+                }
             }
         });
 
@@ -325,6 +330,63 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
+    private void updateStatusAksi(String status_power) {
+        String send_status;
+        if (status_power.equals("Hidup")) {
+            send_status = "offline";
+        } else {
+            send_status = "online";
+        }
+
+        SweetAlertDialog pDialog = new SweetAlertDialog(HomeActivity.this, SweetAlertDialog.PROGRESS_TYPE);
+        pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+        pDialog.setTitleText("Loading");
+        pDialog.setCancelable(false);
+        pDialog.show();
+
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Call<ResponseKurir> responseKurirCall = apiInterface.setStatusAksi(kurir_id, send_status);
+        responseKurirCall.enqueue(new Callback<ResponseKurir>() {
+            @Override
+            public void onResponse(Call<ResponseKurir> call, Response<ResponseKurir> response) {
+                pDialog.dismiss();
+                if (response.isSuccessful()) {
+                    String kode = String.valueOf(response.body().getStatus_code());
+                    if (kode.equals("200")) {
+                        laodDataKurur(kurir_id);
+                        if (status_power.equals("Hidup")) {
+                            Toast.makeText(HomeActivity.this, "Behasi mengganti Mode Offline", Toast.LENGTH_SHORT).show();
+                            img_power.setColorFilter(ContextCompat.getColor(HomeActivity.this,
+                                    R.color.black));
+                            tv_power.setText("Mati");
+                            tv_power.setTextColor(getResources().getColor(R.color.black));
+
+                        } else {
+                            Toast.makeText(HomeActivity.this, "Behasi mengganti Mode Online", Toast.LENGTH_SHORT).show();
+                            img_power.setColorFilter(ContextCompat.getColor(HomeActivity.this,
+                                    R.color.white));
+                            tv_power.setText("Hidup");
+                            tv_power.setTextColor(getResources().getColor(R.color.white));
+                        }
+                    } else {
+                        Toast.makeText(HomeActivity.this, "Proses gagal1", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(HomeActivity.this, "Proses gagal2", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseKurir> call, Throwable t) {
+                pDialog.dismiss();
+                Toast.makeText(HomeActivity.this, "Proses gagal", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+    }
+
     private void laodDataKurur(String kurir_id_send) {
 
         SweetAlertDialog pDialog = new SweetAlertDialog(HomeActivity.this, SweetAlertDialog.PROGRESS_TYPE);
@@ -345,6 +407,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
                     if (status_code.equals("200")) {
                         kurir = response.body().getData();
                         prosesCekData(kurir);
+                        checkStatusAksi(kurir);
                     } else {
                         new SweetAlertDialog(HomeActivity.this, SweetAlertDialog.ERROR_TYPE)
                                 .setTitleText("Opss..")
@@ -372,6 +435,22 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
 
+    }
+
+    private void checkStatusAksi(Kurir kurir) {
+        status_aski = kurir.getStatus_aksi();
+        if (status_aski.equals("offline")) {
+            img_power.setColorFilter(ContextCompat.getColor(HomeActivity.this,
+                    R.color.black));
+            tv_power.setText("Mati");
+            tv_power.setTextColor(getResources().getColor(R.color.black));
+
+        } else {
+            img_power.setColorFilter(ContextCompat.getColor(HomeActivity.this,
+                    R.color.white));
+            tv_power.setText("Hidup");
+            tv_power.setTextColor(getResources().getColor(R.color.white));
+        }
     }
 
     private void prosesCekData(Kurir kurir) {

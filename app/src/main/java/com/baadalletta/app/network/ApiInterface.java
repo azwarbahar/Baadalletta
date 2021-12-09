@@ -40,6 +40,11 @@ public interface ApiInterface {
     @GET("kurir/show/{kurir_id}")
     Call<ResponseKurir> getKurirId(@Path("kurir_id") String kurir_id);
 
+    // UPDATE STATUS ONLINE
+    @POST("kurir/update/status-akun/{kurir_id}")
+    Call<ResponseKurir> setStatusAksi(@Path("kurir_id") String kurir_id,
+                                      @Query("status_aksi") String status_aksi);
+
 
     // MAPS
     @GET("maps/api/directions/json")

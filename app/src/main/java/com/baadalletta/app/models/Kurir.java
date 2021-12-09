@@ -23,6 +23,12 @@ public class Kurir implements Parcelable {
 
     private String foto;
 
+    private String foto_sim;
+
+    private String foto_ktp;
+
+    private String status_verifikasi;
+
     private String created_at;
 
     private String updated_at;
@@ -37,6 +43,9 @@ public class Kurir implements Parcelable {
         lat = in.readString();
         lng = in.readString();
         foto = in.readString();
+        foto_sim = in.readString();
+        foto_ktp = in.readString();
+        status_verifikasi = in.readString();
         created_at = in.readString();
         updated_at = in.readString();
     }
@@ -89,6 +98,18 @@ public class Kurir implements Parcelable {
         return foto;
     }
 
+    public String getFoto_sim() {
+        return foto_sim;
+    }
+
+    public String getFoto_ktp() {
+        return foto_ktp;
+    }
+
+    public String getStatus_verifikasi() {
+        return status_verifikasi;
+    }
+
     public String getCreated_at() {
         return created_at;
     }
@@ -113,6 +134,9 @@ public class Kurir implements Parcelable {
         parcel.writeString(lat);
         parcel.writeString(lng);
         parcel.writeString(foto);
+        parcel.writeString(foto_sim);
+        parcel.writeString(foto_ktp);
+        parcel.writeString(status_verifikasi);
         parcel.writeString(created_at);
         parcel.writeString(updated_at);
     }
