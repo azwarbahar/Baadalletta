@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -41,13 +42,17 @@ import com.akexorcist.googledirection.model.Leg;
 import com.akexorcist.googledirection.util.DirectionConverter;
 import com.baadalletta.app.BuildConfig;
 import com.baadalletta.app.R;
+import com.baadalletta.app.SortPlaces;
 import com.baadalletta.app.adapter.PesananHomeAdapter;
 import com.baadalletta.app.directionhelper.FetchURL;
 import com.baadalletta.app.directionhelper.TaskLoadedCallback;
 import com.baadalletta.app.models.Customer;
+import com.baadalletta.app.models.Kurir;
 import com.baadalletta.app.models.Pesanan;
+import com.baadalletta.app.models.Place;
 import com.baadalletta.app.models.ResponsCustomer;
 import com.baadalletta.app.models.ResponsPesanan;
+import com.baadalletta.app.models.ResponseKurir;
 import com.baadalletta.app.models.ResponsePesananKurir;
 import com.baadalletta.app.models.maps.distance.Distance;
 import com.baadalletta.app.models.maps.distance.Duration;
@@ -90,6 +95,7 @@ import com.karumi.dexter.listener.single.PermissionListener;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -107,9 +113,12 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         RoutingListener,
         PesananHomeAdapter.PesananListRecyclerClickListener {
 
+    private SharedPreferences sharedpreferences;
+    private SharedPreferences.Editor editor;
+
     private PolylineOptions polyOptions = new PolylineOptions();
     Polyline polylineOptions_final = null;
-
+    private ArrayList<Pesanan> pesanans_diatur = new ArrayList<>();
     private GoogleMap map;
     private Polyline currentPolyline;
 
@@ -154,6 +163,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Animation slide_up;
     private Animation slide_down;
 
+    private ImageView img_kosong;
     private CardView cv_slide_up;
     private TextView tv_kode;
     private TextView tv_jarak;
@@ -168,10 +178,17 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private LinearLayout ll_refresh;
 
+    private Kurir kurir;
+    private String kurir_id;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        sharedpreferences = getApplicationContext().getSharedPreferences(Constanta.MY_SHARED_PREFERENCES, MODE_PRIVATE);
+        kurir_id = sharedpreferences.getString(Constanta.SESSION_ID_KURIR, "");
+
         slide_up = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_up);
         slide_down = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_down);
 
@@ -191,7 +208,11 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         img_power = findViewById(R.id.img_power);
         tv_power = findViewById(R.id.tv_power);
         ll_power = findViewById(R.id.ll_power);
+
+        img_kosong = findViewById(R.id.img_kosong);
         rv_pesanan_home = findViewById(R.id.rv_pesanan_home);
+        rv_pesanan_home.setVisibility(View.GONE);
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         assert mapFragment != null;
         mapFragment.getMapAsync(this);
@@ -204,24 +225,10 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-//        ll_refresh.setVisibility(View.GONE);
         ll_refresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 map.clear();
-//                        pesananArrayList.add(response.body().getData());
-//                        latling_baadalletta = null;
-//                position_hashap.clear();
-//                markerMapPesanan.clear();
-//                latLngList.clear();
-//                polylines.clear();
-//                marker_list.clear();
-//                initMapsBaadalletta2();
-//                laodDataPesanan("6");
-//                map.clear();
-//                latLngList.clear();
-//                pesananArrayList.clear();
                 mapFragment.getMapAsync(HomeActivity.this);
                 laodDataPesanan("6");
             }
@@ -277,7 +284,6 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-
         img_user = findViewById(R.id.img_user);
         img_user.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -285,6 +291,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
                 startActivity(new Intent(HomeActivity.this, AkunActivity.class));
             }
         });
+
         rl_lihat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -313,8 +320,96 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         btn_jenis_map.setOnClickListener(this::clickjenisMap);
 
-        laodDataPesanan("6");
+        laodDataPesanan(kurir_id);
+        laodDataKurur(kurir_id);
 
+    }
+
+    private void laodDataKurur(String kurir_id_send) {
+
+        SweetAlertDialog pDialog = new SweetAlertDialog(HomeActivity.this, SweetAlertDialog.PROGRESS_TYPE);
+        pDialog.getProgressHelper().setBarColor(Color.parseColor("#0187C6"));
+        pDialog.setTitleText("Cek Akun Kurir..");
+        pDialog.setCancelable(false);
+        pDialog.show();
+
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Call<ResponseKurir> responseKurirCall = apiInterface.getKurirId(kurir_id_send);
+        responseKurirCall.enqueue(new Callback<ResponseKurir>() {
+            @Override
+            public void onResponse(Call<ResponseKurir> call, Response<ResponseKurir> response) {
+                pDialog.dismiss();
+                if (response.isSuccessful()) {
+                    String message = response.body().getMessage();
+                    String status_code = String.valueOf(response.body().getStatus_code());
+                    if (status_code.equals("200")) {
+                        kurir = response.body().getData();
+                        prosesCekData(kurir);
+                    } else {
+                        new SweetAlertDialog(HomeActivity.this, SweetAlertDialog.ERROR_TYPE)
+                                .setTitleText("Opss..")
+                                .setContentText(message)
+                                .show();
+                    }
+
+                } else {
+                    new SweetAlertDialog(HomeActivity.this, SweetAlertDialog.ERROR_TYPE)
+                            .setTitleText("Mohon Maaf.")
+                            .setContentText("Terjadi Kesalahan Sistem")
+                            .show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseKurir> call, Throwable t) {
+                pDialog.dismiss();
+                new SweetAlertDialog(HomeActivity.this, SweetAlertDialog.ERROR_TYPE)
+                        .setTitleText("Mohon Maaf.")
+                        .setContentText("Terjadi Kesalahan Sistem")
+                        .show();
+            }
+        });
+
+
+    }
+
+    private void prosesCekData(Kurir kurir) {
+
+        String status_akun = kurir.getStatus_akun();
+        String kurir_id_session = String.valueOf(kurir.getId());
+        if (status_akun.equals("active")) {
+            startSessionSave(kurir_id_session);
+            Log.e("Kurir", "status : " + status_akun);
+        } else {
+            SweetAlertDialog sweetAlertDialogError = new SweetAlertDialog(HomeActivity.this,
+                    SweetAlertDialog.ERROR_TYPE);
+            sweetAlertDialogError.setTitleText("Opss..");
+            sweetAlertDialogError.setCancelable(false);
+            sweetAlertDialogError.setContentText("Akun ini telah di suspend!");
+            sweetAlertDialogError.setConfirmButton("OK", new SweetAlertDialog.OnSweetClickListener() {
+                @Override
+                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                    sweetAlertDialog.dismiss();
+                    Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                    SharedPreferences mPreferences1 = getSharedPreferences(Constanta.MY_SHARED_PREFERENCES, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = mPreferences1.edit();
+                    editor.apply();
+                    editor.clear();
+                    editor.commit();
+                    finish();
+                }
+            });
+            sweetAlertDialogError.show();
+        }
+
+    }
+
+    private void startSessionSave(String kurir_id) {
+        editor = sharedpreferences.edit();
+        editor.putString(Constanta.SESSION_ID_KURIR, kurir_id);
+        editor.apply();
     }
 
     @Override
@@ -363,9 +458,6 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
                         public void run() {
                             pDialog.dismiss();
                             updatePesananScan(result);
-//                            Intent intent = new Intent(HomeActivity.this, InputDataBayiActivity.class);
-//                            intent.putExtra("DATA", result);
-//                            startActivity(intent);
                         }
                     }, 1500);
 
@@ -377,7 +469,8 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void updatePesananScan(String result) {
 
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<ResponsPesanan> responsPesananCall = apiInterface.setPesananKurir(result, "proses", 6);
+        Call<ResponsPesanan> responsPesananCall = apiInterface.setPesananKurir(result,
+                "proses", Integer.parseInt(kurir_id));
         responsPesananCall.enqueue(new Callback<ResponsPesanan>() {
             @Override
             public void onResponse(Call<ResponsPesanan> call, Response<ResponsPesanan> response) {
@@ -385,17 +478,8 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
                     String kode = String.valueOf(response.body().getStatus_code());
                     if (kode.equals("200")) {
                         map.clear();
-//                        pesananArrayList.add(response.body().getData());
-//                        latling_baadalletta = null;
-//                        position_hashap.clear();
-//                        markerMapPesanan.clear();
-//                        latLngList.clear();
-//                        polylines.clear();
-//                        marker_list.clear();
-//                        initMapsBaadalletta2();
-//                        laodDataPesanan("6");
-                        laodDataPesanan("6");
-
+                        laodDataPesanan(kurir_id);
+                        laodDataKurur(kurir_id);
 
                     } else {
                         Toast.makeText(HomeActivity.this, "Kode bukan 200, Pesan " + response.body().getMessage(), Toast.LENGTH_SHORT).show();
@@ -502,29 +586,82 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if (response.isSuccessful()) {
                     int status_code = response.body().getStatus_code();
                     if (status_code == 200) {
-//                        pesananArrayList.clear();
                         pesananArrayList = (ArrayList<Pesanan>) response.body().getData();
-                        rv_pesanan_home.setLayoutManager(new LinearLayoutManager(HomeActivity.this));
-                        pesananHomeAdapter = new PesananHomeAdapter(HomeActivity.this, pesananArrayList, HomeActivity.this);
-                        rv_pesanan_home.setAdapter(pesananHomeAdapter);
-                        initMapsPesanan(pesananArrayList);
-
-//                        Toast.makeText(HomeActivity.this, "Pesan : " + response.body().getMessage(), Toast.LENGTH_LONG).show();
+                        if (pesananArrayList.isEmpty()) {
+                            map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(Double.parseDouble(Constanta.LATITUDE_BAADALLETTA),
+                                    Double.parseDouble(Constanta.LONGITUDE_BAADALLETTA)), 12));
+                            img_kosong.setVisibility(View.VISIBLE);
+                            rv_pesanan_home.setVisibility(View.GONE);
+//                            Toast.makeText(HomeActivity.this, "Kosong", Toast.LENGTH_SHORT).show();
+                        } else {
+                            img_kosong.setVisibility(View.GONE);
+                            rv_pesanan_home.setVisibility(View.VISIBLE);
+                            distanceSortingOrder(pesananArrayList);
+                        }
                     } else {
+                        map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(Double.parseDouble(Constanta.LATITUDE_BAADALLETTA),
+                                Double.parseDouble(Constanta.LONGITUDE_BAADALLETTA)), 12));
+                        img_kosong.setVisibility(View.VISIBLE);
+                        rv_pesanan_home.setVisibility(View.GONE);
                         Toast.makeText(HomeActivity.this, "Kode = " + status_code + " and Pesan : " + response.body().getMessage(), Toast.LENGTH_LONG).show();
                     }
                 } else {
-                    Toast.makeText(HomeActivity.this, "Gagal", Toast.LENGTH_SHORT).show();
+                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(Double.parseDouble(Constanta.LATITUDE_BAADALLETTA),
+                            Double.parseDouble(Constanta.LONGITUDE_BAADALLETTA)), 12));
+                    img_kosong.setVisibility(View.VISIBLE);
+                    rv_pesanan_home.setVisibility(View.GONE);
+                    Toast.makeText(HomeActivity.this, "Gagal Load Data Pesanan", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ResponsePesananKurir> call, Throwable t) {
                 pDialog.dismiss();
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(Double.parseDouble(Constanta.LATITUDE_BAADALLETTA),
+                        Double.parseDouble(Constanta.LONGITUDE_BAADALLETTA)), 12));
+                img_kosong.setVisibility(View.VISIBLE);
+                rv_pesanan_home.setVisibility(View.GONE);
                 Toast.makeText(HomeActivity.this, "Error : " + t.getMessage(), Toast.LENGTH_SHORT).show();
 
             }
         });
+
+    }
+
+    private void distanceSortingOrder(ArrayList<Pesanan> pesananArrayList) {
+
+        // jarak yang terdekat adari baadalletta ke a
+        // setelah itu jarak yang terdekat dari a ke b
+        // setelah itu jarak yang terdekat dari b ke c
+        ArrayList<Place> places = new ArrayList<Place>();
+        boolean first_loop = true;
+        for (int x = 0; x < pesananArrayList.size(); x++) {
+            String titik_pesanan = pesananArrayList.get(x).getTitik_koordinat();
+            double latitude_pelanggan = Double.parseDouble(titik_pesanan.substring(0, titik_pesanan.lastIndexOf(",")));
+            double longitude_pelanggan = Double.parseDouble(titik_pesanan.substring(titik_pesanan.lastIndexOf(",") + 1));
+            places.add(new Place(String.valueOf(pesananArrayList.get(x).getId()),
+                    new LatLng(latitude_pelanggan, longitude_pelanggan), pesananArrayList.get(x)));
+        }
+
+        String lat_ba = Constanta.LATITUDE_BAADALLETTA;
+        String longi_ba = Constanta.LONGITUDE_BAADALLETTA;
+        String latling_origin = lat_ba + "," + longi_ba;
+
+        LatLng latLng2 = new LatLng(Double.parseDouble(lat_ba), Double.parseDouble(longi_ba));
+
+        Collections.sort(places, new SortPlaces(latLng2));
+        pesanans_diatur.clear();
+
+        for (Place p : places) {
+            pesanans_diatur.add(p.getPesanan());
+            Log.i("Places after sorting", "Place: " + p.getId_pesanan());
+            Toast.makeText(HomeActivity.this, p.getId_pesanan(), Toast.LENGTH_SHORT).show();
+        }
+        rv_pesanan_home.setLayoutManager(new LinearLayoutManager(HomeActivity.this));
+        pesananHomeAdapter = new PesananHomeAdapter(HomeActivity.this, pesanans_diatur,
+                HomeActivity.this, places);
+        rv_pesanan_home.setAdapter(pesananHomeAdapter);
+        initMapsPesanan(pesanans_diatur);
 
     }
 
@@ -658,7 +795,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
                         .execute(new DirectionCallback() {
                             @Override
                             public void onDirectionSuccess(@Nullable Direction direction) {
-                                Toast.makeText(HomeActivity.this, "Sukses", Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(HomeActivity.this, "Sukses", Toast.LENGTH_SHORT).show();
 
 
                                 Log.d("eeeeee", direction.getStatus());
@@ -676,7 +813,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
 //                                    polylineOptions_final.remove();
 //                                }
                                     PolylineOptions polylineOptions = DirectionConverter.createPolyline(getApplication(),
-                                            directionPositionList, 5, Color.parseColor("#0187C6"));
+                                            directionPositionList, 4, Color.parseColor("#0187C6"));
                                     polylineOptions_final = map.addPolyline(polylineOptions);
                                 } else {
                                     // Do something
@@ -718,9 +855,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
                         .execute(new DirectionCallback() {
                             @Override
                             public void onDirectionSuccess(@Nullable Direction direction) {
-                                Toast.makeText(HomeActivity.this, "Sukses", Toast.LENGTH_SHORT).show();
-
-
+//                                Toast.makeText(HomeActivity.this, "Sukses", Toast.LENGTH_SHORT).show();
                                 Log.d("eeeeee", direction.getStatus());
 
                                 if (direction.isOK()) {
@@ -736,7 +871,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
 //                                    polylineOptions_final.remove();
 //                                }
                                     PolylineOptions polylineOptions = DirectionConverter.createPolyline(getApplication(),
-                                            directionPositionList, 5, Color.parseColor("#8DADBC"));
+                                            directionPositionList, 4, Color.parseColor("#0187C6"));
                                     polylineOptions_final = map.addPolyline(polylineOptions);
                                 } else {
                                     // Do something
@@ -826,17 +961,6 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    private void initMapsBaadalletta2() {
-        double latitude_baadalletta = Double.parseDouble(Constanta.LATITUDE_BAADALLETTA);
-        double longitude_baadalletta = Double.parseDouble(Constanta.LONGITUDE_BAADALLETTA);
-        Marker marker1 = map.addMarker(new MarkerOptions().icon(bitmapDescriptorBaadalletta(this))
-                .position(new LatLng(latitude_baadalletta, longitude_baadalletta)));
-        builder.include(marker1.getPosition());
-//        latling_baadalletta = new LatLng(latitude_baadalletta, longitude_baadalletta);
-        marker_list.add(0, marker1);
-        marker_baadaletta = marker1;
-    }
-
     private void initMapsBaadalletta() {
         double latitude_baadalletta = Double.parseDouble(Constanta.LATITUDE_BAADALLETTA);
         double longitude_baadalletta = Double.parseDouble(Constanta.LONGITUDE_BAADALLETTA);
@@ -917,7 +1041,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onPesananClicked(int position) {
 
-        String customer_id = String.valueOf(pesananArrayList.get(position).getId_customer());
+        String customer_id = String.valueOf(pesanans_diatur.get(position).getId_customer());
 
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<ResponsCustomer> responsCustomerCall = apiInterface.getCustomerId(customer_id);

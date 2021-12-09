@@ -219,7 +219,6 @@
 
             </RelativeLayout>
 
-
             <RelativeLayout
                 android:id="@+id/rl_sliding_up"
                 android:layout_width="match_parent"
@@ -255,6 +254,16 @@
                     android:text="Pengantara"
                     android:textColor="@color/white"
                     android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/img_kosong"
+                    android:layout_width="170dp"
+                    android:layout_height="130dp"
+                    android:layout_below="@id/tv_title_sliding"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="50dp"
+                    android:layout_marginBottom="100dp"
+                    android:src="@drawable/img_kosong" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_pesanan_home"

@@ -324,8 +324,8 @@ public class DetailPesananActivity extends AppCompatActivity implements OnMapRea
 
         LatLngBounds bounds = builder.build();
         int width = getResources().getDisplayMetrics().widthPixels;
-        int height = getResources().getDisplayMetrics().heightPixels;
-        int padding = (int) (width * 0.16); // offset from edges of the map 10% of screen
+        int height = getResources().getDisplayMetrics().heightPixels+1;
+        int padding = (int) (width * 0.40); // offset from edges of the map 10% of screen
 
 
         CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding);
@@ -362,6 +362,7 @@ public class DetailPesananActivity extends AppCompatActivity implements OnMapRea
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
+        map.setPadding(0, 25, 0, 14);
 
         double latitude_baadalletta = Double.parseDouble(Constanta.LATITUDE_BAADALLETTA);
         double longitude_baadalletta = Double.parseDouble(Constanta.LONGITUDE_BAADALLETTA);

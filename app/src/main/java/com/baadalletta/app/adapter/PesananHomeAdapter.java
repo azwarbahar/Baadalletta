@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.baadalletta.app.R;
 import com.baadalletta.app.models.Customer;
 import com.baadalletta.app.models.Pesanan;
+import com.baadalletta.app.models.Place;
 import com.baadalletta.app.models.ResponsCustomer;
 import com.baadalletta.app.network.ApiClient;
 import com.baadalletta.app.network.ApiInterface;
@@ -24,6 +25,7 @@ import com.baadalletta.app.ui.DetailPesananActivity;
 import com.baadalletta.app.utils.Constanta;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -36,11 +38,13 @@ public class PesananHomeAdapter extends RecyclerView.Adapter<PesananHomeAdapter.
     private Context context;
     private ArrayList<Pesanan> pesananArrayList;
     private PesananListRecyclerClickListener mClickListener;
+    private List<Place> places;
 
-    public PesananHomeAdapter(Context context, ArrayList<Pesanan> pesananArrayList, PesananListRecyclerClickListener mClickListener) {
+    public PesananHomeAdapter(Context context, ArrayList<Pesanan> pesananArrayList, PesananListRecyclerClickListener mClickListener, List<Place> places) {
         this.context = context;
         this.pesananArrayList = pesananArrayList;
         this.mClickListener = mClickListener;
+        this.places = places;
     }
 
     @NonNull
@@ -58,6 +62,8 @@ public class PesananHomeAdapter extends RecyclerView.Adapter<PesananHomeAdapter.
 
         String customer_id = String.valueOf(pesananArrayList.get(position).getId_customer());
 
+//        holder.tv_nomor.setText(String.valueOf(position + 1));
+        holder.tv_nomor.setText(places.get(position).getId_pesanan());
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<ResponsCustomer> responsCustomerCall = apiInterface.getCustomerId(customer_id);
         responsCustomerCall.enqueue(new Callback<ResponsCustomer>() {
@@ -88,7 +94,6 @@ public class PesananHomeAdapter extends RecyclerView.Adapter<PesananHomeAdapter.
                             holder.tv_jarak.setText(jarak_meter+ " Km");
                         }
 
-                        holder.tv_nomor.setText(String.valueOf(position + 1));
                         holder.tv_alamat.setText(customer.getAlamat());
                         holder.tv_nama.setText("Nama : " + customer.getNama());
                         holder.tv_kode.setText("Kode : " + customer.getKode());

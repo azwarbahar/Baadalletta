@@ -2,6 +2,8 @@ package com.baadalletta.app.network;
 
 import com.baadalletta.app.models.ResponsCustomer;
 import com.baadalletta.app.models.ResponsPesanan;
+import com.baadalletta.app.models.ResponseKurir;
+import com.baadalletta.app.models.ResponseLogin;
 import com.baadalletta.app.models.ResponsePesananKurir;
 import com.baadalletta.app.models.maps.Result;
 import com.baadalletta.app.models.maps.distance.ResponseDistanceMaps;
@@ -29,7 +31,14 @@ public interface ApiInterface {
     @GET("kurir/get-pesanan/{kurir_id}")
     Call<ResponsePesananKurir> getPesananIdKurir(@Path("kurir_id") String kurir_id);
 
-    //
+    // LOGIN
+    @POST("kurir/auth")
+    Call<ResponseLogin> postLogin(@Query("username") String username,
+                                  @Query("password") String password);
+
+    // KURUR
+    @GET("kurir/show/{kurir_id}")
+    Call<ResponseKurir> getKurirId(@Path("kurir_id") String kurir_id);
 
 
     // MAPS
