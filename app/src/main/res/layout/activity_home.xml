@@ -121,7 +121,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
                             android:layout_toRightOf="@id/img_back_slide_up"
-                            android:text="Kode : C-GE05-001"
+                            android:text="Kode : xxxxxxxxxx"
                             android:textColor="@color/black2"
                             android:textSize="16dp"
                             android:textStyle="bold" />
@@ -133,7 +133,7 @@
                             android:layout_below="@id/tv_kode"
                             android:layout_alignLeft="@id/tv_kode"
                             android:layout_marginTop="10dp"
-                            android:text="Jarak : 2.4 Km"
+                            android:text="Jarak : xxxx xx"
                             android:textColor="@color/ColorPrimary"
                             android:textSize="12sp"
                             android:textStyle="bold" />
@@ -146,7 +146,7 @@
                             android:layout_marginHorizontal="16dp"
                             android:layout_marginTop="10dp"
                             android:layout_toRightOf="@id/tv_jarak"
-                            android:text="Waktu : 10 menit"
+                            android:text="Waktu : xxx xxxx"
                             android:textColor="@color/ColorPrimary"
                             android:textSize="12sp"
                             android:textStyle="bold" />

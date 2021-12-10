@@ -41,30 +41,30 @@
             android:layout_marginTop="8dp"
             android:layout_toRightOf="@id/tv_nomor"
             android:maxLines="2"
-            android:textStyle="bold"
-            android:text="@string/alamat"
+            android:text="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
             android:textColor="@color/black"
-            android:textSize="12dp" />
+            android:textSize="12dp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tv_nama"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_alamat"
-            android:textColor="@color/black2"
             android:layout_alignLeft="@id/tv_alamat"
             android:layout_marginTop="3dp"
-            android:text="Nama : Azwar Bahar"
+            android:text="Nama : xxxxxxxxx"
+            android:textColor="@color/black2"
             android:textSize="10sp" />
 
         <TextView
             android:id="@+id/tv_kode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black2"
             android:layout_below="@id/tv_nama"
             android:layout_alignLeft="@id/tv_alamat"
-            android:text="Kode : Azwar Bahar"
+            android:text="Kode : xxxxxxxxxxxxxx"
+            android:textColor="@color/black2"
             android:textSize="12sp" />
 
         <TextView
@@ -74,7 +74,7 @@
             android:layout_below="@id/tv_kode"
             android:layout_alignLeft="@id/tv_alamat"
             android:layout_marginTop="5dp"
-            android:text="Jarak : 2.3 Km"
+            android:text="Jarak : xxxx xx"
             android:textColor="@color/ColorPrimary"
             android:textSize="14sp"
             android:textStyle="bold" />

@@ -45,6 +45,7 @@ import com.baadalletta.app.R;
 import com.baadalletta.app.SortPlaces;
 import com.baadalletta.app.adapter.PesananHomeAdapter;
 import com.baadalletta.app.directionhelper.TaskLoadedCallback;
+import com.baadalletta.app.models.Customer;
 import com.baadalletta.app.models.Kurir;
 import com.baadalletta.app.models.Pesanan;
 import com.baadalletta.app.models.Place;
@@ -138,6 +139,8 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
     private TextView tv_power;
     private ImageView img_power;
 
+    private TextView tv_kode;
+
     private SweetAlertDialog pDialog;
 
     private ArrayList<Pesanan> pesananArrayList;
@@ -163,7 +166,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private ImageView img_kosong;
     private CardView cv_slide_up;
-    private TextView tv_kode;
+    //    private TextView tv_kode;
     private TextView tv_jarak;
     private TextView tv_waktu;
     private RelativeLayout rl_lihat;
@@ -767,11 +770,22 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             }
 
-//            String lat = String.valueOf();
-//            String longi = String.valueOf(marker.getPosition().latitude);
-            String latling_distance = pesanan.getTitik_koordinat();
-//            Toast.makeText(HomeActivity.this, latling_distance, Toast.LENGTH_SHORT).show();
+            ApiInterface apiInterface3 = ApiClient.getClient().create(ApiInterface.class);
+            Call<ResponsCustomer> responsCustomerCall = apiInterface3.getCustomerId(String.valueOf(pesanan.getId_customer()));
+            responsCustomerCall.enqueue(new Callback<ResponsCustomer>() {
+                @Override
+                public void onResponse(Call<ResponsCustomer> call, Response<ResponsCustomer> response) {
+                    Customer customer = response.body().getData();
+                    tv_kode.setText("Kode : " + customer.getKode());
+                }
 
+                @Override
+                public void onFailure(Call<ResponsCustomer> call, Throwable t) {
+
+                }
+            });
+
+            String latling_distance = pesanan.getTitik_koordinat();
             String lat_ba = Constanta.LATITUDE_BAADALLETTA;
             String longi_ba = Constanta.LONGITUDE_BAADALLETTA;
             String latling_origin = lat_ba + "," + longi_ba;
@@ -782,15 +796,8 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
             responseDistanceMapsCall.enqueue(new Callback<ResponseDistanceMaps>() {
                 @Override
                 public void onResponse(Call<ResponseDistanceMaps> call, Response<ResponseDistanceMaps> response) {
-//
-//                    if (response.isSuccessful()){
-//                        Toast.makeText(HomeActivity.this, "Sukses", Toast.LENGTH_SHORT).show();
-//                    } else {
-//                        Toast.makeText(HomeActivity.this, "gagal", Toast.LENGTH_SHORT).show();
-//                    }
 
                     String status = response.body().getStatus();
-//                    Toast.makeText(HomeActivity.this, status, Toast.LENGTH_SHORT).show();
                     if (status.equals("OK")) {
                         List<RowsItem> rowsItem = response.body().getRows();
                         for (int a = 0; a < rowsItem.size(); a++) {

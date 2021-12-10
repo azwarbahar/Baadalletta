@@ -14,14 +14,22 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.baadalletta.app.BuildConfig;
 import com.baadalletta.app.R;
 import com.baadalletta.app.models.Customer;
 import com.baadalletta.app.models.Pesanan;
 import com.baadalletta.app.models.Place;
 import com.baadalletta.app.models.ResponsCustomer;
+import com.baadalletta.app.models.maps.distance.Distance;
+import com.baadalletta.app.models.maps.distance.Duration;
+import com.baadalletta.app.models.maps.distance.ElementsItem;
+import com.baadalletta.app.models.maps.distance.ResponseDistanceMaps;
+import com.baadalletta.app.models.maps.distance.RowsItem;
 import com.baadalletta.app.network.ApiClient;
+import com.baadalletta.app.network.ApiClientMaps;
 import com.baadalletta.app.network.ApiInterface;
 import com.baadalletta.app.ui.DetailPesananActivity;
+import com.baadalletta.app.ui.HomeActivity;
 import com.baadalletta.app.utils.Constanta;
 
 import java.util.ArrayList;
@@ -62,37 +70,61 @@ public class PesananHomeAdapter extends RecyclerView.Adapter<PesananHomeAdapter.
 
         String customer_id = String.valueOf(pesananArrayList.get(position).getId_customer());
 
-//        holder.tv_nomor.setText(String.valueOf(position + 1));
-        holder.tv_nomor.setText(places.get(position).getId_pesanan());
+        String latling_distance = pesananArrayList.get(position).getTitik_koordinat();
+
+        String lat_ba = Constanta.LATITUDE_BAADALLETTA;
+        String longi_ba = Constanta.LONGITUDE_BAADALLETTA;
+        String latling_origin = lat_ba + "," + longi_ba;
+
+        ApiInterface apiInterface2 = ApiClientMaps.getClient().create(ApiInterface.class);
+        Call<ResponseDistanceMaps> responseDistanceMapsCall = apiInterface2.getDirectionMatrix(latling_origin,
+                latling_distance, BuildConfig.API_KEY_MAPS);
+        responseDistanceMapsCall.enqueue(new Callback<ResponseDistanceMaps>() {
+            @Override
+            public void onResponse(Call<ResponseDistanceMaps> call, Response<ResponseDistanceMaps> response) {
+                String status = response.body().getStatus();
+                if (status.equals("OK")) {
+                    List<RowsItem> rowsItem = response.body().getRows();
+                    for (int a = 0; a < rowsItem.size(); a++) {
+                        List<ElementsItem> elementsItem = rowsItem.get(a).getElements();
+                        if (elementsItem.get(a).getStatus().equals("OK")) {
+                            for (int b = 0; b < elementsItem.size(); b++) {
+
+                                Distance distance = elementsItem.get(b).getDistance();
+                                String jarak = distance.getText();
+                                holder.tv_jarak.setText("Jarak : " + jarak);
+
+
+                                Duration duration = elementsItem.get(b).getDuration();
+                                String waktu = duration.getText();
+//                                holder.tv.setText("Waktu : " + waktu);
+                            }
+                        }
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseDistanceMaps> call, Throwable t) {
+
+                Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+        holder.tv_nomor.setText(String.valueOf(position + 1));
+//        holder.tv_nomor.setText(places.get(position).getId_pesanan());
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<ResponsCustomer> responsCustomerCall = apiInterface.getCustomerId(customer_id);
         responsCustomerCall.enqueue(new Callback<ResponsCustomer>() {
             @Override
             public void onResponse(Call<ResponsCustomer> call, Response<ResponsCustomer> response) {
-                if (response.isSuccessful()){
+                if (response.isSuccessful()) {
                     String kode = String.valueOf(response.body().getStatus_code());
-                    if (kode.equals("200")){
+                    if (kode.equals("200")) {
 
                         customer = response.body().getData();
-                        String lat = customer.getLatitude();
-                        String lon = customer.getLongitude();
-                        Location loc1 = new Location("");
-                        loc1.setLatitude(Double.parseDouble(Constanta.LATITUDE_BAADALLETTA));
-                        loc1.setLongitude(Double.parseDouble(Constanta.LONGITUDE_BAADALLETTA));
-                        Location loc2 = new Location("");
-                        loc2.setLatitude(Double.parseDouble(lat));
-                        loc2.setLongitude(Double.parseDouble(lon));
-                        float distanceInMeters = loc1.distanceTo(loc2)/1000;
-                        float distanceInKilometers = loc1.distanceTo(loc2)/1000;
-
-                        String jarak_subs = String.valueOf(distanceInKilometers).substring(0,1);
-                        if (jarak_subs.equals("0")){
-                            String jarak_meter = String.valueOf(distanceInMeters).substring(0,5);
-                            holder.tv_jarak.setText(jarak_meter+ " Meter");
-                        } else {
-                            String jarak_meter = String.valueOf(distanceInKilometers).substring(0,4);
-                            holder.tv_jarak.setText(jarak_meter+ " Km");
-                        }
 
                         holder.tv_alamat.setText(customer.getAlamat());
                         holder.tv_nama.setText("Nama : " + customer.getNama());
@@ -162,7 +194,7 @@ public class PesananHomeAdapter extends RecyclerView.Adapter<PesananHomeAdapter.
         }
     }
 
-    public interface PesananListRecyclerClickListener{
+    public interface PesananListRecyclerClickListener {
         void onPesananClicked(int position);
     }
 
