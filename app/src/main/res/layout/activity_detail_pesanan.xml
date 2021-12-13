@@ -187,12 +187,14 @@
             android:paddingVertical="6dp">
 
             <ImageView
+                android:id="@+id/img_mulai"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_baseline_navigation_24"
                 app:tint="@color/white" />
 
             <TextView
+                android:id="@+id/tv_mulai"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"

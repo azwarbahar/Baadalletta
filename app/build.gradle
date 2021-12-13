@@ -45,7 +45,12 @@ dependencies {
 
     // QR Code Scanner
     implementation "com.github.blikoon:QRCodeScanner:$qrcodescannerVersion"
+
+    //dexter permissions
     implementation 'com.karumi:dexter:6.2.2'
+
+    //uCrpt Photo
+    implementation 'com.github.yalantis:ucrop:2.2.2'
 
     // ZoominImageView
     implementation 'com.github.chrisbanes:PhotoView:2.2.0'

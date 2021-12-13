@@ -9,6 +9,8 @@
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/drawable/bg_input_login.xml" value="0.20989583333333334" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/drawable/bg_lingkaran.xml" value="0.20989583333333334" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/drawable/bg_mulai_btn.xml" value="0.20989583333333334" />
+        <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/drawable/bg_mulai_disable_btn.xml" value="0.20989583333333334" />
+        <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/drawable/bg_mulai_primary_dark_btn.xml" value="0.20989583333333334" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/drawable/bg_primary_corner_bottom.xml" value="0.20989583333333334" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/drawable/bg_primary_corner_bottom_12.xml" value="0.20989583333333334" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/drawable/bg_primary_radius.xml" value="0.20989583333333334" />
@@ -18,11 +20,12 @@
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/drawable/bg_trans_merah.xml" value="0.20989583333333334" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/drawable/ic_img_marker_1.xml" value="0.20989583333333334" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/activity_akun.xml" value="0.22" />
-        <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/activity_detail_pesanan.xml" value="0.16666666666666666" />
+        <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/activity_detail_pesanan.xml" value="0.22" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/activity_edit_akun.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/activity_edit_password.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/activity_history.xml" value="0.19375" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/activity_home.xml" value="0.22" />
+        <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/activity_image_pengantaran_picker.xml" value="0.19375" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/activity_login.xml" value="0.22" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/activity_main.xml" value="0.19375" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/activity_preview_photo.xml" value="0.19375" />
@@ -31,6 +34,7 @@
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/item_pesanan_home.xml" value="0.22" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/item_riwayat_kurir.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/scane_view.xml" value="0.19375" />
+        <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/xml/file_paths.xml" value="0.13489583333333333" />
       </map>
     </option>
   </component>
@@ -43,7 +47,7 @@
   <component name="VisualizationToolProject">
     <option name="state">
       <ProjectState>
-        <option name="scale" value="0.16666666666666666" />
+        <option name="scale" value="0.22" />
       </ProjectState>
     </option>
   </component>

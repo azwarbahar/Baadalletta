@@ -169,12 +169,58 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/cv_edit_password"
+                android:id="@+id/cv_verifed"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/cv1"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="30dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="6dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="10dp">
+
+                    <ImageView
+                        android:id="@+id/img_verifed"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/ic_icon_verifed" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_toRightOf="@id/img_verifed"
+                        android:text="verifikasi"
+                        android:textColor="@color/black"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true"
+                        android:text="Belum"
+                        android:textSize="12sp"
+                        android:textStyle="italic"
+                        android:textColor="@color/cancelText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_edit_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/cv_verifed"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="20dp"
                 app:cardCornerRadius="8dp"
                 app:cardElevation="6dp">
 

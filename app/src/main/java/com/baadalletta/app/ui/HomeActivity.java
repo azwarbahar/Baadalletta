@@ -183,6 +183,10 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
     private String kurir_id;
     private String status_aski;
 
+    private ArrayList<Pesanan> pesanans_delivery;
+    private RelativeLayout rl_pengantaran;
+    private TextView tv_jumlah_pengantaran;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -195,6 +199,10 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         slide_down = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_down);
 
         sliding_layout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
+
+        rl_pengantaran = findViewById(R.id.rl_pengantaran);
+        tv_jumlah_pengantaran = findViewById(R.id.tv_jumlah_pengantaran);
+        rl_pengantaran.setVisibility(View.GONE);
 
         tv_kode = findViewById(R.id.tv_kode);
         tv_jarak = findViewById(R.id.tv_jarak);
@@ -232,6 +240,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onClick(View view) {
                 map.clear();
                 mapFragment.getMapAsync(HomeActivity.this);
+                initMapsBaadalletta();
                 laodDataPesanan(kurir_id);
                 laodDataKurur(kurir_id);
             }
@@ -310,6 +319,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
                     for (int a = 0; a < pesananArrayList.size(); a++) {
                         String id = String.valueOf(pesananArrayList.get(a).getId());
                         if (id.equals(selected_marker)) {
+                            cv_slide_up.setVisibility(View.GONE);
                             Intent intent = new Intent(HomeActivity.this, DetailPesananActivity.class);
                             intent.putExtra("Extra_data", pesananArrayList.get(a));
                             startActivity(intent);
@@ -327,6 +337,17 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
         btn_jenis_map.setOnClickListener(this::clickjenisMap);
+
+        rl_pengantaran.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (pesanans_delivery != null) {
+                    Intent intent = new Intent(HomeActivity.this, DetailPesananActivity.class);
+                    intent.putExtra("Extra_data", pesanans_delivery.get(0));
+                    startActivity(intent);
+                }
+            }
+        });
 
         laodDataPesanan(kurir_id);
         laodDataKurur(kurir_id);
@@ -390,6 +411,12 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
+
     private void laodDataKurur(String kurir_id_send) {
 
         SweetAlertDialog pDialog = new SweetAlertDialog(HomeActivity.this, SweetAlertDialog.PROGRESS_TYPE);
@@ -437,6 +464,47 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
+
+    }
+
+    private void checkPesananDelivery(String kurir_id) {
+
+        SweetAlertDialog pDialog = new SweetAlertDialog(HomeActivity.this, SweetAlertDialog.PROGRESS_TYPE);
+        pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+        pDialog.setTitleText("Loading");
+        pDialog.setCancelable(false);
+        pDialog.show();
+
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Call<ResponsePesananKurir> responsePesananKurirCall = apiInterface.getPesananMaps(kurir_id, "delivery");
+        responsePesananKurirCall.enqueue(new Callback<ResponsePesananKurir>() {
+            @Override
+            public void onResponse(Call<ResponsePesananKurir> call, Response<ResponsePesananKurir> response) {
+                pDialog.dismiss();
+                if (response.isSuccessful()) {
+                    int status_code = response.body().getStatus_code();
+                    if (status_code == 200) {
+                        pesanans_delivery = (ArrayList<Pesanan>) response.body().getData();
+                        if (pesanans_delivery.size() > 0) {
+                            rl_pengantaran.setVisibility(View.VISIBLE);
+                            tv_jumlah_pengantaran.setText(String.valueOf(pesanans_delivery.size()));
+                        } else {
+                            rl_pengantaran.setVisibility(View.GONE);
+                        }
+                    } else {
+                        rl_pengantaran.setVisibility(View.GONE);
+                    }
+                } else {
+                    rl_pengantaran.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponsePesananKurir> call, Throwable t) {
+                pDialog.dismiss();
+                rl_pengantaran.setVisibility(View.GONE);
+            }
+        });
 
     }
 
@@ -560,6 +628,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
                     String kode = String.valueOf(response.body().getStatus_code());
                     if (kode.equals("200")) {
                         map.clear();
+                        initMapsBaadalletta();
                         laodDataPesanan(kurir_id);
                         laodDataKurur(kurir_id);
 
@@ -657,6 +726,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         pDialog.setTitleText("Loading");
         pDialog.setCancelable(false);
         pDialog.show();
+        checkPesananDelivery(kurir_id);
 
 
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
@@ -737,7 +807,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         for (Place p : places) {
             pesanans_diatur.add(p.getPesanan());
             Log.i("Places after sorting", "Place: " + p.getId_pesanan());
-            Toast.makeText(HomeActivity.this, p.getId_pesanan(), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(HomeActivity.this, p.getId_pesanan(), Toast.LENGTH_SHORT).show();
         }
         rv_pesanan_home.setLayoutManager(new LinearLayoutManager(HomeActivity.this));
         pesananHomeAdapter = new PesananHomeAdapter(HomeActivity.this, pesanans_diatur,
@@ -904,16 +974,6 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 } else {
                                     // Do something
                                 }
-//                        Log.d("eeeeee"+direction.getGeocodedWaypointList().toString(), "onDirectionSuccess: ");
-
-//                            direction.getRouteList().get(0).;
-//                            PolylineOptions options = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);
-//                            for (int z = 0; z < list.size(); z++) {
-//                                LatLng point = list.get(z);
-//                                options.add(point);
-//                            }
-//                            line = myMap.addPolyline(options);
-
                             }
 
                             @Override
