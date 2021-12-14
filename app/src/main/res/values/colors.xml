@@ -14,6 +14,7 @@
     <color name="ColorPrimary">#0187C6</color>
     <color name="ColorPrimaryDark">#0A4965</color>
 
+    <color name="transparan">#00FFFFFF</color>
 
     <color name="ColorPrimary20">#320187C6</color>
     <color name="ColorPrimary10">#1A0187C6</color>

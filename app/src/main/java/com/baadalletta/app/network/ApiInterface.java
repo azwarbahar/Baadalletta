@@ -74,12 +74,26 @@ public interface ApiInterface {
     @GET("kurir/get-customer/byId/{customer_id}")
     Call<ResponsCustomer> getCustomerId(@Path("customer_id") String customer_id);
 
-    // UPDATE FOTO PENGANTARAN DAN FOTO PROFILE
+    // UPDATE FOTO PENGANTARAN
     @Multipart
     @POST("kurir/update/file-foto/{pesanan_id}")
     Call<ResponsePhoto> updatePhoto(@Path("pesanan_id") String pesanan_id,
                                     @Part MultipartBody.Part foto,
                                     @Part("type") RequestBody type);
+
+    // UPDATE PHOTO KURIR PROFILE
+    @Multipart
+    @POST("kurir/update/file-foto/{kurir_id}")
+    Call<ResponsePhoto> updatePhotoProfil(@Path("kurir_id") String kurir_id,
+                                          @Part MultipartBody.Part foto,
+                                          @Part("type") RequestBody type);
+
+
+    // UPDATE PASSWORD KURIR
+    @POST("kurir/update/ubah-password/{kurir_id}")
+    Call<ResponseLogin> updatePasswordKurir(@Path("kurir_id") String kurir_id,
+                                            @Query("password_lama") String password_lama,
+                                            @Query("password_baru") String password_baru);
 
 
 }

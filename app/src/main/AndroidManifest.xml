@@ -14,6 +14,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher_baadalletta"
@@ -23,6 +24,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Baadalletta"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning,MissingApplicationIcon">
+        <activity
+            android:name=".ui.ImagePickerActivity"
+            android:exported="true" />
         <activity
             android:name=".ui.ImagePengantaranPickerActivity"
             android:exported="true" />
@@ -59,7 +63,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait" /> <!-- cache directory file provider paths -->

@@ -61,7 +61,7 @@
             android:layout_toRightOf="@id/img_1"
             android:ellipsize="end"
             android:maxLines="2"
-            android:text="@string/alamat"
+            android:text="xxxxxxxxxxxxxxxx"
             android:textColor="@color/white"
             android:textSize="12sp"
             android:textStyle="bold" />
@@ -82,7 +82,7 @@
             android:layout_marginLeft="6dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
-            android:text="Jarak : 2.4Km"
+            android:text="Jarak : xxxx xx"
             android:textColor="@color/white"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -94,12 +94,24 @@
             android:layout_alignTop="@id/tv_jarak"
             android:layout_marginHorizontal="16dp"
             android:layout_toRightOf="@id/tv_jarak"
-            android:text="Waktu : 10 menit"
+            android:text="Waktu : xxx xx"
             android:textColor="@color/white"
             android:textSize="16sp"
             android:textStyle="bold" />
 
     </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/btn_jenis_map"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_below="@id/rl_top"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/bg_bulat_putih"
+        android:padding="6dp"
+        android:src="@drawable/ic_baseline_layers_24"
+        app:tint="@color/white" />
 
     <RelativeLayout
         android:id="@+id/rl_bottom"
@@ -128,7 +140,7 @@
             android:background="@drawable/bg_success"
             android:paddingHorizontal="10dp"
             android:paddingVertical="5dp"
-            android:text="Kode : C-GE05-001"
+            android:text="Kode : xxx xxx xxx"
             android:textColor="@color/doneText"
             android:textSize="16dp"
             android:textStyle="bold" />
@@ -140,7 +152,7 @@
             android:layout_below="@id/tv_kode"
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="15dp"
-            android:text="Nama : Muhammad Azwar bahar"
+            android:text="Nama : xxxxxx xxxxx"
             android:textColor="@color/white"
             android:textStyle="bold" />
 

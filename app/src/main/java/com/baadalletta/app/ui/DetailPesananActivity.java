@@ -17,6 +17,7 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -41,7 +42,13 @@ import com.baadalletta.app.models.Pesanan;
 import com.baadalletta.app.models.ResponsCustomer;
 import com.baadalletta.app.models.ResponsePesananKurir;
 import com.baadalletta.app.models.ResponsePhoto;
+import com.baadalletta.app.models.maps.distance.Distance;
+import com.baadalletta.app.models.maps.distance.Duration;
+import com.baadalletta.app.models.maps.distance.ElementsItem;
+import com.baadalletta.app.models.maps.distance.ResponseDistanceMaps;
+import com.baadalletta.app.models.maps.distance.RowsItem;
 import com.baadalletta.app.network.ApiClient;
+import com.baadalletta.app.network.ApiClientMaps;
 import com.baadalletta.app.network.ApiInterface;
 import com.baadalletta.app.utils.Constanta;
 import com.google.android.gms.common.ConnectionResult;
@@ -116,6 +123,8 @@ public class DetailPesananActivity extends AppCompatActivity implements OnMapRea
     private RelativeLayout continer_dialog;
     private LinearLayout ll_foto;
     private LinearLayout ll_batal;
+    private ImageView btn_jenis_map;
+    private View dialogView;
 
     private Bitmap bitmap_bukti_tindakan;
 
@@ -170,6 +179,7 @@ public class DetailPesananActivity extends AppCompatActivity implements OnMapRea
         rl_mulai = findViewById(R.id.rl_mulai);
         img_mulai = findViewById(R.id.img_mulai);
         tv_mulai = findViewById(R.id.tv_mulai);
+        btn_jenis_map = findViewById(R.id.btn_jenis_map);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         assert mapFragment != null;
@@ -237,6 +247,78 @@ public class DetailPesananActivity extends AppCompatActivity implements OnMapRea
                             }
                         })
                         .show();
+            }
+        });
+
+        btn_jenis_map.setOnClickListener(this::clickjenisMap);
+
+    }
+
+    private void clickjenisMap(View view) {
+
+        AlertDialog.Builder dialog = new AlertDialog.Builder(DetailPesananActivity.this);
+        LayoutInflater inflater = getLayoutInflater();
+        dialogView = inflater.inflate(R.layout.dialog_jenis_maps, null);
+        dialog.setView(dialogView);
+        dialog.setCancelable(true);
+        dialog.setTitle("Jenis Maps");
+        dialog.show();
+
+        LinearLayout ll_maps_default = dialogView.findViewById(R.id.ll_maps_default);
+        LinearLayout ll_maps_satelit = dialogView.findViewById(R.id.ll_maps_satelit);
+
+        ImageView img_maps_default = dialogView.findViewById(R.id.img_maps_default);
+        ImageView img_maps_satelit = dialogView.findViewById(R.id.img_maps_satelit);
+
+        TextView tv_maps_default = dialogView.findViewById(R.id.tv_maps_default);
+        TextView tv_maps_satelit = dialogView.findViewById(R.id.tv_maps_satelit);
+
+        if (map.getMapType() == GoogleMap.MAP_TYPE_SATELLITE) {
+
+            img_maps_satelit.setBackground(ContextCompat.getDrawable(DetailPesananActivity.this, R.drawable.bg_trans_merah));
+            img_maps_satelit.setPadding(6, 6, 6, 6);
+            tv_maps_satelit.setTextColor(ContextCompat.getColor(DetailPesananActivity.this, R.color.ColorPrimaryDark));
+
+            tv_maps_default.setBackground(null);
+            tv_maps_default.setPadding(0, 0, 0, 0);
+            tv_maps_default.setTextColor(ContextCompat.getColor(DetailPesananActivity.this, R.color.grey));
+        } else {
+            img_maps_default.setBackground(ContextCompat.getDrawable(DetailPesananActivity.this, R.drawable.bg_trans_merah));
+            img_maps_default.setPadding(6, 6, 6, 6);
+            tv_maps_default.setTextColor(ContextCompat.getColor(DetailPesananActivity.this, R.color.ColorPrimaryDark));
+
+            img_maps_satelit.setBackground(null);
+            img_maps_satelit.setPadding(0, 0, 0, 0);
+            tv_maps_satelit.setTextColor(ContextCompat.getColor(DetailPesananActivity.this, R.color.grey));
+        }
+
+        ll_maps_default.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                map.setMapType(map.MAP_TYPE_NORMAL);
+                img_maps_default.setBackground(ContextCompat.getDrawable(DetailPesananActivity.this, R.drawable.bg_trans_merah));
+                img_maps_default.setPadding(6, 6, 6, 6);
+                tv_maps_default.setTextColor(ContextCompat.getColor(DetailPesananActivity.this, R.color.ColorPrimaryDark));
+
+                img_maps_satelit.setBackground(null);
+                img_maps_satelit.setPadding(0, 0, 0, 0);
+                tv_maps_satelit.setTextColor(ContextCompat.getColor(DetailPesananActivity.this, R.color.grey));
+
+            }
+        });
+
+        ll_maps_satelit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                map.setMapType(map.MAP_TYPE_SATELLITE);
+                img_maps_satelit.setBackground(ContextCompat.getDrawable(DetailPesananActivity.this, R.drawable.bg_trans_merah));
+                img_maps_satelit.setPadding(6, 6, 6, 6);
+                tv_maps_satelit.setTextColor(ContextCompat.getColor(DetailPesananActivity.this, R.color.ColorPrimaryDark));
+
+                img_maps_default.setBackground(null);
+                img_maps_default.setPadding(0, 0, 0, 0);
+                tv_maps_default.setTextColor(ContextCompat.getColor(DetailPesananActivity.this, R.color.grey));
+
             }
         });
 
@@ -495,7 +577,6 @@ public class DetailPesananActivity extends AppCompatActivity implements OnMapRea
 
     }
 
-
     private void checkPesananDelivery(String kurir_id) {
 
         SweetAlertDialog pDialog = new SweetAlertDialog(DetailPesananActivity.this, SweetAlertDialog.PROGRESS_TYPE);
@@ -558,6 +639,8 @@ public class DetailPesananActivity extends AppCompatActivity implements OnMapRea
 
     private void initDataIntent(Pesanan pesanan_intent) {
 
+        initJarakWaktu(pesanan_intent);
+
         pesanan_id = String.valueOf(pesanan_intent.getId());
 
         String customer_id = String.valueOf(pesanan_intent.getId_customer());
@@ -574,7 +657,6 @@ public class DetailPesananActivity extends AppCompatActivity implements OnMapRea
         } else if (status_pesanan.equals("proses")) {
             checkPesananDelivery(kurir_id);
         }
-
 
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<ResponsCustomer> responsCustomerCall = apiInterface.getCustomerId(customer_id);
@@ -613,6 +695,51 @@ public class DetailPesananActivity extends AppCompatActivity implements OnMapRea
             }
         });
 
+    }
+
+    private void initJarakWaktu(Pesanan pesanan_intent) {
+
+        String latling_distance = pesanan_intent.getTitik_koordinat();
+        String lat_ba = Constanta.LATITUDE_BAADALLETTA;
+        String longi_ba = Constanta.LONGITUDE_BAADALLETTA;
+        String latling_origin = lat_ba + "," + longi_ba;
+
+        ApiInterface apiInterface2 = ApiClientMaps.getClient().create(ApiInterface.class);
+        Call<ResponseDistanceMaps> responseDistanceMapsCall = apiInterface2.getDirectionMatrix(latling_origin,
+                latling_distance, BuildConfig.API_KEY_MAPS);
+        responseDistanceMapsCall.enqueue(new Callback<ResponseDistanceMaps>() {
+            @Override
+            public void onResponse(Call<ResponseDistanceMaps> call, Response<ResponseDistanceMaps> response) {
+
+                String status = response.body().getStatus();
+                if (status.equals("OK")) {
+                    List<RowsItem> rowsItem = response.body().getRows();
+                    for (int a = 0; a < rowsItem.size(); a++) {
+                        List<ElementsItem> elementsItem = rowsItem.get(a).getElements();
+                        if (elementsItem.get(a).getStatus().equals("OK")) {
+                            for (int b = 0; b < elementsItem.size(); b++) {
+
+                                Distance distance = elementsItem.get(b).getDistance();
+                                String jarak = distance.getText();
+                                tv_jarak.setText("Jarak : " + jarak);
+
+
+                                Duration duration = elementsItem.get(b).getDuration();
+                                String waktu = duration.getText();
+                                tv_waktu.setText("Waktu : " + waktu);
+                            }
+                        }
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseDistanceMaps> call, Throwable t) {
+
+                Toast.makeText(DetailPesananActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void initMaps(String latitude_customer, String longitude_customer) {
@@ -707,7 +834,6 @@ public class DetailPesananActivity extends AppCompatActivity implements OnMapRea
         String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + BuildConfig.API_KEY_MAPS;
         return url;
     }
-
 
     @Override
     public boolean onSupportNavigateUp() {

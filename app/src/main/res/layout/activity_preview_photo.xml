@@ -7,13 +7,10 @@
     android:background="@color/black"
     tools:context=".ui.PreviewPhotoActivity">
 
-    <com.github.chrisbanes.photoview.PhotoView
-        android:id="@+id/img_zoom"
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewpager_img"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        android:scaleType="fitCenter"
-        android:src="@drawable/img_contoh_rumah" />
+        android:layout_height="match_parent" />
 
     <ImageView
         android:id="@+id/img_close"
@@ -23,8 +20,6 @@
         android:layout_marginTop="20dp"
         android:src="@drawable/ic_baseline_close_24"
         app:tint="@color/white" />
-
-
 
 
 </RelativeLayout>

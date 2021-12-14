@@ -19,7 +19,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="20dp"
-        android:text="Baadalletta versi 0.03 alfa preview"
+        android:text="@string/version_test"
         android:textColor="@color/black2" />
 
 </RelativeLayout>
