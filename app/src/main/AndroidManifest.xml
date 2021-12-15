@@ -25,6 +25,9 @@
         android:theme="@style/Theme.Baadalletta"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning,MissingApplicationIcon">
         <activity
+            android:name=".ui.PreviewPhotoProfilActivity"
+            android:exported="true" />
+        <activity
             android:name=".ui.ImagePickerActivity"
             android:exported="true" />
         <activity

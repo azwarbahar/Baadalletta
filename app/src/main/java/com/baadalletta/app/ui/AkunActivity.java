@@ -13,6 +13,7 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,12 +32,12 @@ import com.baadalletta.app.models.ResponsePhoto;
 import com.baadalletta.app.network.ApiClient;
 import com.baadalletta.app.network.ApiInterface;
 import com.baadalletta.app.utils.Constanta;
+import com.bumptech.glide.Glide;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
-import com.mikhaellopez.circularimageview.CircularImageView;
 
 import java.io.File;
 import java.io.IOException;
@@ -68,9 +69,11 @@ public class AkunActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     private SwipeRefreshLayout swipe_continer;
 
-    private CircularImageView img_profile;
+    private ImageView img_profile;
     private static final String TAG = AkunActivity.class.getSimpleName();
     public static final int REQUEST_IMAGE = 100;
+
+    private String foto_profil;
 
 
     @Override
@@ -237,7 +240,7 @@ public class AkunActivity extends AppCompatActivity implements SwipeRefreshLayou
         RequestBody type_send = RequestBody.create(MediaType.parse("text/plain"), "foto_profil");
 
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<ResponsePhoto> responsePhotoCall = apiInterface.updatePhoto(kurir_id, foto_pesanan_send, type_send);
+        Call<ResponsePhoto> responsePhotoCall = apiInterface.updatePhotoProfil(kurir_id, foto_pesanan_send, type_send);
         responsePhotoCall.enqueue(new Callback<ResponsePhoto>() {
             @Override
             public void onResponse(Call<ResponsePhoto> call, Response<ResponsePhoto> response) {
@@ -269,9 +272,9 @@ public class AkunActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     private void launchViewImage() {
 //        Toast.makeText(getActivity(), "Lihat Gambar!!", Toast.LENGTH_SHORT).show();
-//        Intent intent = new Intent(getActivity(), ViewImageActivity.class);
-//        intent.putExtra("foto", foto);
-//        getActivity().startActivity(intent);
+        Intent intent = new Intent(AkunActivity.this, PreviewPhotoProfilActivity.class);
+        intent.putExtra("foto", foto_profil);
+        startActivity(intent);
     }
 
     private void launchCameraIntent() {
@@ -374,6 +377,15 @@ public class AkunActivity extends AppCompatActivity implements SwipeRefreshLayou
     }
 
     private void initDataKurur(Kurir kurir) {
+
+        String foto = kurir.getFoto();
+        foto_profil = Constanta.URL_PHOTO_KURIR + foto;
+
+        Glide.with(this)
+                .load(Constanta.URL_PHOTO_KURIR + foto)
+                .placeholder(R.drawable.loading_animation)
+//                .error(R.drawable.ic_broken_image)
+                .into(img_profile);
 
         tv_nama.setText(kurir.getNama());
         tv_telpon.setText(kurir.getWhatsaap());

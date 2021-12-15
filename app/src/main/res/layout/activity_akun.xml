@@ -36,35 +36,29 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <RelativeLayout
+                    <androidx.cardview.widget.CardView
                         android:id="@+id/cv_foto"
-                        android:layout_width="@dimen/toolbar_profile_width"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true">
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="16dp"
+                        app:cardCornerRadius="40dp">
 
-                        <com.mikhaellopez.circularimageview.CircularImageView
-                            android:id="@+id/img_profile"
-                            android:layout_width="@dimen/toolbar_profile_width"
-                            android:layout_height="@dimen/toolbar_profile_width"
-                            android:layout_centerInParent="true"
-                            android:layout_marginTop="@dimen/activity_padding"
-                            android:layout_marginBottom="@dimen/activity_padding"
-                            android:background="@color/transparan"
-                            android:scaleType="centerInside"
-                            android:src="@drawable/img_contoh_rumah"
-                            app:civ_border_color="@android:color/white"
-                            app:civ_border_width="2dp" />
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
 
-                        <com.mikhaellopez.circularimageview.CircularImageView
-                            android:id="@+id/img_plus"
-                            android:layout_width="@dimen/ic_plus_width"
-                            android:layout_height="@dimen/ic_plus_width"
-                            android:layout_alignBottom="@id/img_profile"
-                            android:layout_alignParentRight="true"
-                            android:src="@drawable/ic_baseline_add_24"
-                            app:civ_shadow="true"
-                            app:civ_shadow_radius="1" />
-                    </RelativeLayout>
+                            <ImageView
+                                android:id="@+id/img_profile"
+                                android:layout_width="@dimen/toolbar_profile_width"
+                                android:layout_height="@dimen/toolbar_profile_width"
+                                android:layout_centerInParent="true"
+                                android:background="@color/transparan"
+                                android:scaleType="centerInside"
+                                tools:src="@drawable/img_contoh_rumah" />
+
+                        </RelativeLayout>
+                    </androidx.cardview.widget.CardView>
 
                     <TextView
                         android:id="@+id/tv1"

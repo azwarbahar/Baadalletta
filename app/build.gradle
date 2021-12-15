@@ -59,7 +59,6 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.android.gms:play-services-location:17.1.0'
     implementation 'org.greenrobot:eventbus:3.2.0'
-    implementation 'com.github.jd-alexander:library:1.1.0'
 
     // new
     implementation 'com.akexorcist:google-direction-library:1.2.1'
@@ -90,8 +89,5 @@ dependencies {
 
     // Allert
     implementation 'com.github.f0ris.sweetalert:library:1.5.6'
-
-    // circular imageview
-    implementation 'com.mikhaellopez:circularimageview:3.2.0'
 
 }

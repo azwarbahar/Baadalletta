@@ -10,8 +10,11 @@ import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 
 import com.baadalletta.app.R;
+import com.baadalletta.app.utils.Constanta;
+import com.bumptech.glide.Glide;
 import com.github.chrisbanes.photoview.PhotoView;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class ImagePelangganAdapter extends PagerAdapter {
@@ -19,13 +22,13 @@ public class ImagePelangganAdapter extends PagerAdapter {
     Context context;
 
     // Array of images
-    int[] images;
+    ArrayList<String> images;
 
     // Layout Inflater
     LayoutInflater mLayoutInflater;
 
     // Viewpager Constructor
-    public ImagePelangganAdapter(Context context, int[] images) {
+    public ImagePelangganAdapter(Context context, ArrayList<String> images) {
         this.context = context;
         this.images = images;
         mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -34,7 +37,7 @@ public class ImagePelangganAdapter extends PagerAdapter {
     @Override
     public int getCount() {
         // return the number of images
-        return images.length;
+        return images.size();
     }
 
     @Override
@@ -52,8 +55,12 @@ public class ImagePelangganAdapter extends PagerAdapter {
         PhotoView imageView =  itemView.findViewById(R.id.img_zoom);
 
         // setting the image in the imageView
-        imageView.setImageResource(images[position]);
+//        imageView.setImageResource(images[position]);
 
+        Glide.with(context)
+                .load(images.get(position))
+                .placeholder(R.drawable.loading_animation)
+                .into(imageView);
         // Adding the View
         Objects.requireNonNull(container).addView(itemView);
 

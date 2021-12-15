@@ -63,11 +63,6 @@ import com.baadalletta.app.network.ApiClientMaps;
 import com.baadalletta.app.network.ApiInterface;
 import com.baadalletta.app.utils.Constanta;
 import com.blikoon.qrcodescanner.QrCodeActivity;
-import com.directions.route.AbstractRouting;
-import com.directions.route.Route;
-import com.directions.route.RouteException;
-import com.directions.route.Routing;
-import com.directions.route.RoutingListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdate;
@@ -109,7 +104,6 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         com.google.android.gms.location.LocationListener,
         GoogleMap.OnPolylineClickListener,
         TaskLoadedCallback,
-        RoutingListener,
         PesananHomeAdapter.PesananListRecyclerClickListener {
 
     private SharedPreferences sharedpreferences;
@@ -938,9 +932,6 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             if (first_poly == 0) {
                 first_poly = 1;
-//                Findroutes(latling_baadalletta, latLngList.get(i));
-//                Log.d("Latling", latling_baadalletta.toString());
-
 
                 GoogleDirection.withServerKey(BuildConfig.API_KEY_MAPS)
                         .from(latling_baadalletta)
@@ -951,8 +942,6 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
                         .execute(new DirectionCallback() {
                             @Override
                             public void onDirectionSuccess(@Nullable Direction direction) {
-//                                Toast.makeText(HomeActivity.this, "Sukses", Toast.LENGTH_SHORT).show();
-
 
                                 Log.d("eeeeee", direction.getStatus());
 
@@ -964,10 +953,6 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     ArrayList<LatLng> directionPositionList = leg.getDirectionPoint();
                                     Log.d("eeeeee", directionPositionList.size() + "eeeeee");
 
-//                                if (polylineOptions_final != null)
-//                                {
-//                                    polylineOptions_final.remove();
-//                                }
                                     PolylineOptions polylineOptions = DirectionConverter.createPolyline(getApplication(),
                                             directionPositionList, 4, Color.parseColor("#0187C6"));
                                     polylineOptions_final = map.addPolyline(polylineOptions);
@@ -984,13 +969,6 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
                         });
 
             } else {
-//                Log.d("Latling", latLngList.get(i - 1).toString());
-//
-//                if (latLngList.size() > 4) {
-//                    break;
-//                } else {
-//                    Findroutes(latLngList.get(i - 1), latLngList.get(i));
-//                }
 
                 GoogleDirection.withServerKey(BuildConfig.API_KEY_MAPS)
                         .from(latLngList.get(i - 1))
@@ -1051,9 +1029,6 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
             CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding);
             map.animateCamera(cu);
         }
-
-//        int last_list = latLngList.size() - 1;
-
 
     }
 
@@ -1210,14 +1185,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void showPanel() {
-
-//        if (sliding_layout != null &&
-//                (sliding_layout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED || sliding_layout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED)) {
         sliding_layout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-//        } else {
-//            sliding_layout.setPanelState(SlidingUpPanelLayout.PanelState.ANCHORED);
-//        }
-
     }
 
     @Override
@@ -1230,86 +1198,5 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (currentPolyline != null)
             currentPolyline.remove();
         currentPolyline = map.addPolyline((PolylineOptions) values[0]);
-    }
-
-    @Override
-    public void onRoutingFailure(RouteException e) {
-        View parentLayout = findViewById(android.R.id.content);
-        Snackbar snackbar = Snackbar.make(parentLayout, e.toString(), Snackbar.LENGTH_LONG);
-        snackbar.show();
-
-    }
-
-    @Override
-    public void onRoutingStart() {
-//        Toast.makeText(HomeActivity.this, "Finding Route...", Toast.LENGTH_LONG).show();
-
-    }
-
-    @Override
-    public void onRoutingSuccess(ArrayList<Route> arrayList, int shortestRouteIndex) {
-
-        CameraUpdate center = CameraUpdateFactory.newLatLng(latling_baadalletta);
-        CameraUpdate zoom = CameraUpdateFactory.zoomTo(16);
-//        if(polylines!=null) {
-//            polylines.clear();
-//        }
-        LatLng polylineStartLatLng = null;
-        LatLng polylineEndLatLng = null;
-
-        polylines = null;
-        polylines = new ArrayList<>();
-        //add route(s) to the map using polyline
-        for (int i = 0; i < arrayList.size(); i++) {
-
-            if (i == shortestRouteIndex) {
-                polyOptions.color(getResources().getColor(R.color.ColorPrimary));
-                polyOptions.width(7);
-                polyOptions.addAll(arrayList.get(shortestRouteIndex).getPoints());
-                Polyline polyline = map.addPolyline(polyOptions);
-                polylineStartLatLng = polyline.getPoints().get(0);
-                int k = polyline.getPoints().size();
-                polylineEndLatLng = polyline.getPoints().get(k - 1);
-                polylines.add(polyline);
-
-            } else {
-
-            }
-
-        }
-
-        //Add Marker on route starting position
-//        MarkerOptions startMarker = new MarkerOptions();
-//        startMarker.position(polylineStartLatLng);
-//        startMarker.title("My Location");
-//        mMap.addMarker(startMarker);
-
-        //Add Marker on route ending position
-//        MarkerOptions endMarker = new MarkerOptions();
-//        endMarker.position(polylineEndLatLng);
-//        endMarker.title("Destination");
-//        mMap.addMarker(endMarker);
-    }
-
-    @Override
-    public void onRoutingCancelled() {
-//        Findroutes(start,end);
-    }
-
-    // function to find Routes.
-    public void Findroutes(LatLng Start, LatLng End) {
-        if (Start == null || End == null) {
-//            Toast.makeText(HomeActivity.this, "Unable to get location", Toast.LENGTH_LONG).show();
-        } else {
-
-            Routing routing = new Routing.Builder()
-                    .travelMode(AbstractRouting.TravelMode.DRIVING)
-                    .withListener(this)
-                    .alternativeRoutes(true)
-                    .waypoints(Start, End)
-                    .key(BuildConfig.API_KEY_MAPS)  //also define your api key here.
-                    .build();
-            routing.execute();
-        }
     }
 }

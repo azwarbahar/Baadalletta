@@ -3,22 +3,30 @@ package com.baadalletta.app.ui;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.Interpolator;
+import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -30,6 +38,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.baadalletta.app.BuildConfig;
@@ -53,10 +62,13 @@ import com.baadalletta.app.network.ApiInterface;
 import com.baadalletta.app.utils.Constanta;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -70,13 +82,17 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import okhttp3.MediaType;
@@ -95,6 +111,19 @@ public class DetailPesananActivity extends AppCompatActivity implements OnMapRea
 
     private GoogleMap map;
     private Polyline currentPolyline;
+    private GoogleApiClient mGoogleApiClient;
+    private Location currentLocation;
+    private LocationManager mLocationManager;
+    private LocationManager locationManager;
+    private LocationRequest mLocationRequest;
+    private boolean isPermission;
+    private long UPDATE_INTERVAL = 2000;
+    private long FASTES_INTERVAL = 5000;
+    Location mLastLocation;
+    Marker mCurrLocationMarker;
+    private Marker marek_my_location;
+
+    private LatLng latLng_kurir;
 
     private Drawable vectorDrawble;
     private Bitmap bitmap;
@@ -103,6 +132,8 @@ public class DetailPesananActivity extends AppCompatActivity implements OnMapRea
     List<Marker> marker_list = new ArrayList<Marker>();
 
     private LatLngBounds.Builder builder = new LatLngBounds.Builder();
+
+    private ArrayList<String> img_customer = new ArrayList<String>();
 
     private Pesanan pesanan_intent;
     private Customer customer;
@@ -196,7 +227,9 @@ public class DetailPesananActivity extends AppCompatActivity implements OnMapRea
         img_foto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(DetailPesananActivity.this, PreviewPhotoActivity.class));
+                Intent intent = new Intent(DetailPesananActivity.this, PreviewPhotoActivity.class);
+                intent.putExtra("img_customer", img_customer);
+                startActivity(intent);
             }
         });
 
@@ -252,6 +285,78 @@ public class DetailPesananActivity extends AppCompatActivity implements OnMapRea
 
         btn_jenis_map.setOnClickListener(this::clickjenisMap);
 
+        if (requestSinglePermission()) {
+
+            mGoogleApiClient = new GoogleApiClient.Builder(DetailPesananActivity.this)
+                    .addConnectionCallbacks(this)
+                    .addApi(LocationServices.API)
+                    .build();
+            mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+            checkLocation();
+        }
+
+    }
+
+    private boolean checkLocation() {
+
+        if (!isLocationEnable()) {
+            showAlert();
+        }
+        return isLocationEnable();
+    }
+
+    private boolean isLocationEnable() {
+        locationManager = (LocationManager) Objects.requireNonNull(DetailPesananActivity.this).getSystemService(Context.LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    }
+
+    private void showAlert() {
+        final android.app.AlertDialog.Builder dialog = new android.app.AlertDialog.Builder(DetailPesananActivity.this);
+        dialog.setTitle("Enable Location")
+                .setMessage("Yout Locations Settings is set to 'off'.\nPlease Enable Location to " +
+                        "use this app")
+                .setPositiveButton("Location Setting", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivity(intent);
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+        dialog.show();
+    }
+
+    private boolean requestSinglePermission() {
+
+        Dexter.withActivity(DetailPesananActivity.this)
+                .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+                .withListener(new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted(PermissionGrantedResponse response) {
+                        isPermission = true;
+                    }
+
+                    @Override
+                    public void onPermissionDenied(PermissionDeniedResponse response) {
+                        if (response.isPermanentlyDenied()) {
+                            isPermission = false;
+                        }
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
+
+                    }
+                }).check();
+
+        return isPermission;
     }
 
     private void clickjenisMap(View view) {
@@ -436,8 +541,6 @@ public class DetailPesananActivity extends AppCompatActivity implements OnMapRea
 
             }
         });
-
-
     }
 
     private void updateStatus(String status_pesanan) {
@@ -669,6 +772,23 @@ public class DetailPesananActivity extends AppCompatActivity implements OnMapRea
                     if (kode.equals("200")) {
 
                         customer = response.body().getData();
+
+                        String foto_rumah = customer.getFoto_rumah();
+                        String foto_orang = customer.getFoto_pelanggan();
+                        String foto_ktp = customer.getFoto_ktp();
+
+                        if (foto_rumah != null) {
+                            img_customer.add(Constanta.URL_PHOTO_RUMAH + foto_rumah);
+                        }
+
+                        if (foto_orang != null) {
+                            img_customer.add(Constanta.URL_PHOTO_PELANGGAN + foto_orang);
+                        }
+
+                        if (foto_ktp != null) {
+                            img_customer.add(Constanta.URL_PHOTO_KTP + foto_ktp);
+                        }
+
                         String alamat = customer.getAlamat();
                         String whatsapp = "Whatsapp : " + customer.getWhatsapp();
                         String kode_pelanggan = "Kode : " + customer.getKode();
@@ -765,8 +885,6 @@ public class DetailPesananActivity extends AppCompatActivity implements OnMapRea
         CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding);
         map.moveCamera(cu);
 
-        new FetchURL(DetailPesananActivity.this).execute(getUrl(marker_list.get(0).getPosition(),
-                marker_list.get(1).getPosition(), "driving"), "driving");
     }
 
     private BitmapDescriptor bitmapDescriptor(Context context) {
@@ -793,6 +911,18 @@ public class DetailPesananActivity extends AppCompatActivity implements OnMapRea
         return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 
+    private BitmapDescriptor bitmapDescriptorKurir(Context context) {
+        int height = 46;
+        int width = 55;
+        vectorDrawble = ContextCompat.getDrawable(context, R.drawable.icon_marker_kurir);
+        assert vectorDrawble != null;
+        vectorDrawble.setBounds(0, 0, width, height);
+        bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        vectorDrawble.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
+    }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
@@ -804,6 +934,21 @@ public class DetailPesananActivity extends AppCompatActivity implements OnMapRea
                 .position(new LatLng(latitude_baadalletta, longitude_baadalletta)));
         builder.include(baadaletta_marker.getPosition());
         marker_list.add(0, baadaletta_marker);
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(DetailPesananActivity.this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+//                map.setMyLocationEnabled(true);
+            } else {
+                //Request Location Permission
+                checkLocationPermission();
+            }
+        } else {
+//            buildGoogleApiClient();
+//            map.setMyLocationEnabled(true);
+        }
+
 
         try {
             boolean success = googleMap.setMapStyle(
@@ -818,6 +963,72 @@ public class DetailPesananActivity extends AppCompatActivity implements OnMapRea
         }
 
     }
+
+    private void startLocationUpdate() {
+
+//        progressBar.setVisibility(View.GONE);
+        mLocationRequest = LocationRequest.create()
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                .setInterval(UPDATE_INTERVAL)
+                .setFastestInterval(FASTES_INTERVAL);
+
+        if (ActivityCompat.checkSelfPermission(DetailPesananActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(DetailPesananActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) !=
+                        PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
+                mLocationRequest, this);
+
+    }
+
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(DetailPesananActivity.this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+        mGoogleApiClient.connect();
+    }
+
+    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+
+    private void checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(DetailPesananActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(DetailPesananActivity.this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+                new AlertDialog.Builder(DetailPesananActivity.this)
+                        .setTitle("Location Permission Needed")
+                        .setMessage("This app needs the Location permission, please accept to use location functionality")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                //Prompt the user once explanation has been shown
+                                ActivityCompat.requestPermissions(DetailPesananActivity.this,
+                                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                        MY_PERMISSIONS_REQUEST_LOCATION);
+                            }
+                        })
+                        .create()
+                        .show();
+            } else {
+                // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(DetailPesananActivity.this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_LOCATION);
+            }
+        }
+    }
+
 
     private String getUrl(LatLng origin, LatLng dest, String directionMode) {
         // Origin of route
@@ -850,7 +1061,17 @@ public class DetailPesananActivity extends AppCompatActivity implements OnMapRea
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-
+        if (ActivityCompat.checkSelfPermission(DetailPesananActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(DetailPesananActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) !=
+                        PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        startLocationUpdate();
+        currentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if (currentLocation == null) {
+            startLocationUpdate();
+        }
     }
 
     @Override
@@ -863,9 +1084,107 @@ public class DetailPesananActivity extends AppCompatActivity implements OnMapRea
 
     }
 
+    boolean first_laod = true;
+
     @Override
     public void onLocationChanged(Location location) {
+        mLastLocation = location;
+        if (marek_my_location != null) {
+            marek_my_location.remove();
+        }
+//        getAddress(location.getLatitude(), location.getLongitude());
+        latLng_kurir = new LatLng(location.getLatitude(), location.getLongitude());
+        //Place current location marker
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(latLng_kurir);
+        marek_my_location = map.addMarker(markerOptions.icon(bitmapDescriptorKurir(this)));
+//        Toast.makeText(DetailPesananActivity.this, "Pindah", Toast.LENGTH_SHORT).show();
 
+        if (marker_list.size() > 1) {
+            if (first_laod) {
+                new FetchURL(DetailPesananActivity.this).execute(getUrl(marek_my_location.getPosition(),
+                        marker_list.get(1).getPosition(), "driving"), "driving");
+                first_laod = false;
+            }
+        }
+//        updateLatlingSession(location);
+//        animateMarker(marek_my_location ,new LatLng(location.getLatitude(), location.getLongitude()), false);
+        rotateMarker(marek_my_location, marek_my_location.getRotation());
+    }
+
+    boolean isRotating = false;
+    public void rotateMarker(final Marker marker, final float toRotation) {
+        if(!isRotating) {
+            isRotating = true;
+            final Handler handler = new Handler();
+            final long start = SystemClock.uptimeMillis();
+            final float startRotation = marker.getRotation();
+            final long duration = 1000;
+            float deltaRotation = Math.abs(toRotation - startRotation) % 360;
+            final float rotation = (deltaRotation > 180 ? 360 - deltaRotation : deltaRotation) *
+                    ((toRotation - startRotation >= 0 && toRotation - startRotation <= 180) || (toRotation - startRotation <= -180 && toRotation - startRotation >= -360) ? 1 : -1);
+
+            final LinearInterpolator interpolator = new LinearInterpolator();
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    long elapsed = SystemClock.uptimeMillis() - start;
+                    float t = interpolator.getInterpolation((float) elapsed / duration);
+                    marker.setRotation((startRotation + t * rotation) % 360);
+                    if (t < 1.0) {
+                        // Post again 16ms later.
+                        handler.postDelayed(this, 16);
+                    } else {
+                        isRotating = false;
+                    }
+                }
+            });
+        }
+    }
+
+    public void animateMarker(final Marker marker,final LatLng toPosition, final boolean hideMarke) {
+        final Handler handler = new Handler();
+        final long start = SystemClock.uptimeMillis();
+        Projection proj = map.getProjection();
+        Point startPoint = proj.toScreenLocation(marker.getPosition());
+        final LatLng startLatLng = proj.fromScreenLocation(startPoint);
+        final long duration = 5000;
+
+        final Interpolator interpolator = new LinearInterpolator();
+
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                long elapsed = SystemClock.uptimeMillis() - start;
+                float t = interpolator.getInterpolation((float) elapsed
+                        / duration);
+                double lng = t * toPosition.longitude + (1 - t)
+                        * startLatLng.longitude;
+                double lat = t * toPosition.latitude + (1 - t)
+                        * startLatLng.latitude;
+                marker.setPosition(new LatLng(lat, lng));
+
+                if (t < 1.0) {
+                    // Post again 16ms later.
+                    handler.postDelayed(this, 16);
+                } else {
+                    if (hideMarke) {
+                        marker.setVisible(false);
+                    } else {
+                        marker.setVisible(true);
+                    }
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.connect();
+
+        }
     }
 
     @Override
