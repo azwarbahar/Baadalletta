@@ -25,6 +25,12 @@
         android:theme="@style/Theme.Baadalletta"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning,MissingApplicationIcon">
         <activity
+            android:name=".ui.PreviewPhotoBitmapActivity"
+            android:exported="true" />
+        <activity
+            android:name=".ui.VerifikasiActivity"
+            android:exported="true" />
+        <activity
             android:name=".ui.PreviewPhotoProfilActivity"
             android:exported="true" />
         <activity

@@ -24,6 +24,7 @@
     <color name="doneText">#089554</color>
     <color name="doneBack">#C8FFE6</color>
 
+    <color name="cancelTextTrans">#6DDC0000</color>
     <color name="cancelText">#DC0000</color>
     <color name="cancelBack">#FACFCF</color>
 

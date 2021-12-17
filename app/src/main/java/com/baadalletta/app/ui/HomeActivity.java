@@ -79,7 +79,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.material.snackbar.Snackbar;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -181,6 +180,9 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
     private RelativeLayout rl_pengantaran;
     private TextView tv_jumlah_pengantaran;
 
+    private boolean isVerifed = false;
+    private RelativeLayout rl_verifed_aller;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -208,6 +210,8 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         img_back_slide_up = findViewById(R.id.img_back_slide_up);
         cv_slide_up = findViewById(R.id.cv_slide_up);
         cv_slide_up.setVisibility(View.GONE);
+
+        rl_verifed_aller = findViewById(R.id.rl_verifed_aller);
 
         img_power = findViewById(R.id.img_power);
         tv_power = findViewById(R.id.tv_power);
@@ -240,6 +244,13 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
+        rl_verifed_aller.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(HomeActivity.this, AkunActivity.class));
+            }
+        });
+
         ll_power.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -262,36 +273,45 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View view) {
 
-                String status_power = tv_power.getText().toString();
-                if (status_power.equals("Hidup")) {
+                if (isVerifed) {
+                    String status_power = tv_power.getText().toString();
+                    if (status_power.equals("Hidup")) {
 
-                    Dexter.withContext(getApplicationContext())
-                            .withPermission(Manifest.permission.CAMERA)
-                            .withListener(new PermissionListener() {
-                                @Override
-                                public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
-                                    Intent intent = new Intent(HomeActivity.this, QrCodeActivity.class);
-                                    startActivityForResult(intent, REQUEST_CODE_QR_SCAN);
-                                }
+                        Dexter.withContext(getApplicationContext())
+                                .withPermission(Manifest.permission.CAMERA)
+                                .withListener(new PermissionListener() {
+                                    @Override
+                                    public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
+                                        Intent intent = new Intent(HomeActivity.this, QrCodeActivity.class);
+                                        startActivityForResult(intent, REQUEST_CODE_QR_SCAN);
+                                    }
 
-                                @Override
-                                public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
-                                    permissionDeniedResponse.getRequestedPermission();
-                                }
+                                    @Override
+                                    public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
+                                        permissionDeniedResponse.getRequestedPermission();
+                                    }
 
-                                @Override
-                                public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
-                                    permissionToken.continuePermissionRequest();
-                                }
-                            }).check();
+                                    @Override
+                                    public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
+                                        permissionToken.continuePermissionRequest();
+                                    }
+                                }).check();
+                    } else {
+
+                        new SweetAlertDialog(HomeActivity.this, SweetAlertDialog.ERROR_TYPE)
+                                .setTitleText("Opss..")
+                                .setContentText("Sedang Mode Offline")
+                                .show();
+
+                    }
                 } else {
 
                     new SweetAlertDialog(HomeActivity.this, SweetAlertDialog.ERROR_TYPE)
                             .setTitleText("Opss..")
-                            .setContentText("Sedang Mode Offline")
+                            .setContentText("Akun belum Terverifikasi!")
                             .show();
-
                 }
+
             }
         });
 
@@ -522,6 +542,16 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         String status_akun = kurir.getStatus_akun();
         String kurir_id_session = String.valueOf(kurir.getId());
+
+        String status_verif = kurir.getStatus_verifikasi();
+        if (status_verif.equals("verifikasi")) {
+            rl_verifed_aller.setVisibility(View.GONE);
+            isVerifed = true;
+        } else {
+            rl_verifed_aller.setVisibility(View.VISIBLE);
+            isVerifed = false;
+        }
+
         if (status_akun.equals("active")) {
             startSessionSave(kurir_id_session);
             Log.e("Kurir", "status : " + status_akun);

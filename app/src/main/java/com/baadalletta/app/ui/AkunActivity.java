@@ -23,6 +23,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.baadalletta.app.R;
@@ -33,6 +34,9 @@ import com.baadalletta.app.network.ApiClient;
 import com.baadalletta.app.network.ApiInterface;
 import com.baadalletta.app.utils.Constanta;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.Priority;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -57,6 +61,7 @@ public class AkunActivity extends AppCompatActivity implements SwipeRefreshLayou
     private CardView cv_edit_password;
     private CardView cv_history;
     private CardView cv_logout;
+    private CardView cv_verifed;
 
     private SharedPreferences sharedpreferences;
     private SharedPreferences.Editor editor;
@@ -74,6 +79,11 @@ public class AkunActivity extends AppCompatActivity implements SwipeRefreshLayou
     public static final int REQUEST_IMAGE = 100;
 
     private String foto_profil;
+
+    private boolean isPhotoProfileReady = true;
+
+    private TextView tv_status_verived;
+    private boolean isVerifed = false;
 
 
     @Override
@@ -95,10 +105,32 @@ public class AkunActivity extends AppCompatActivity implements SwipeRefreshLayou
         tv_telpon = findViewById(R.id.tv_telpon);
         tv_status = findViewById(R.id.tv_status);
 
+        tv_status_verived = findViewById(R.id.tv_status_verived);
         ll_edit = findViewById(R.id.ll_edit);
         cv_edit_password = findViewById(R.id.cv_edit_password);
         cv_history = findViewById(R.id.cv_history);
         cv_logout = findViewById(R.id.cv_logout);
+        cv_verifed = findViewById(R.id.cv_verifed);
+
+        cv_verifed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!isVerifed) {
+                    if (isPhotoProfileReady) {
+                        if (kurir != null) {
+                            Intent intent = new Intent(AkunActivity.this, VerifikasiActivity.class);
+                            intent.putExtra("kurir_intent", kurir);
+                            startActivity(intent);
+                        }
+                    } else {
+                        new SweetAlertDialog(AkunActivity.this, SweetAlertDialog.ERROR_TYPE)
+                                .setTitleText("Maaf..")
+                                .setContentText("Pasang foto profil terlebih dahulu.")
+                                .show();
+                    }
+                }
+            }
+        });
 
         img_profile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -187,6 +219,8 @@ public class AkunActivity extends AppCompatActivity implements SwipeRefreshLayou
             }
         });
 
+        ImagePickerActivity.clearCache(this);
+
     }
 
     private void showImagePickerOptions() {
@@ -232,7 +266,6 @@ public class AkunActivity extends AppCompatActivity implements SwipeRefreshLayou
         pDialog.setTitleText("Loading");
         pDialog.setCancelable(false);
         pDialog.show();
-
 
         File file = new File(uri.getPath());
         RequestBody foto = RequestBody.create(MediaType.parse("image/*"), file);
@@ -317,6 +350,7 @@ public class AkunActivity extends AppCompatActivity implements SwipeRefreshLayou
         builder.show();
 
     }
+
     private void openSettings() {
         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         Uri uri = Uri.fromParts("package", getPackageName(), null);
@@ -381,11 +415,38 @@ public class AkunActivity extends AppCompatActivity implements SwipeRefreshLayou
         String foto = kurir.getFoto();
         foto_profil = Constanta.URL_PHOTO_KURIR + foto;
 
-        Glide.with(this)
-                .load(Constanta.URL_PHOTO_KURIR + foto)
-                .placeholder(R.drawable.loading_animation)
-//                .error(R.drawable.ic_broken_image)
-                .into(img_profile);
+        String status_verif = kurir.getStatus_verifikasi();
+        if (status_verif.equals("verifikasi")) {
+            isVerifed = true;
+            tv_status_verived.setText("Sudah");
+            tv_status_verived.setTextColor(ContextCompat.getColor(this, R.color.doneText));
+        } else {
+            isVerifed = false;
+            tv_status_verived.setText("Belum");
+            tv_status_verived.setTextColor(ContextCompat.getColor(this, R.color.cancelText));
+        }
+
+        if (foto == null || foto.equals("")) {
+
+            Glide.with(this)
+                    .load(R.drawable.foto_default)
+                    .into(img_profile);
+            isPhotoProfileReady = false;
+        } else {
+            RequestOptions options = new RequestOptions()
+                    .centerCrop()
+                    .placeholder(R.drawable.loading_animation)
+                    .error(R.drawable.ic_broken_image)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .priority(Priority.HIGH);
+
+            Glide.with(AkunActivity.this)
+                    .load(Constanta.URL_PHOTO_KURIR + foto)
+                    .apply(options)
+                    .into(img_profile);
+            isPhotoProfileReady = true;
+        }
+
 
         tv_nama.setText(kurir.getNama());
         tv_telpon.setText(kurir.getWhatsaap());

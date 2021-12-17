@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white2"
+    tools:context=".ui.VerifikasiActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        style="@style/Widget.AppCompat.Toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/ColorPrimary"
+        app:theme="@style/ToolbarTheme"
+        app:title="Verifikasi Akun"
+        app:titleTextColor="@color/white" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_above="@+id/rl_bottom"
+        android:layout_below="@id/toolbar"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:id="@+id/rl_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_danger_radius">
+
+                <ImageView
+                    android:id="@+id/img_info"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="10dp"
+                    android:src="@drawable/ic_baseline_info_24"
+                    app:tint="@color/black" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/img_info"
+                    android:layout_toRightOf="@id/img_info"
+                    android:text="Informasi"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/img_info"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="10dp"
+                    android:text="@string/lorem_ipsum"
+                    android:textSize="10sp" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tv_ktp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rl_info"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="@dimen/dimen_20dp"
+                android:text="Foto KTP"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_ktp_sub"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_ktp"
+                android:layout_marginHorizontal="16dp"
+                android:text="Pastikan nama dan foto yang tertera pada KTP sama dengan data dari database Baadalletta"
+                android:textSize="10sp" />
+
+            <RelativeLayout
+                android:id="@+id/rl_ktp"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_below="@id/tv_ktp_sub"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_linput_photo">
+
+                <LinearLayout
+                    android:id="@+id/ll_illust_ktp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="200dp"
+                        android:layout_height="150dp"
+                        android:src="@drawable/illust_ktp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ambil Gambar"
+                        android:textColor="@color/ColorPrimary" />
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/img_ktp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginVertical="3dp"
+                    android:scaleType="centerInside"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tv_sim"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rl_ktp"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="@dimen/dimen_20dp"
+                android:text="Foto SIM"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_sim_sub"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_sim"
+                android:layout_marginHorizontal="16dp"
+                android:text="Pastikan nama dan foto yang tertera pada SIM sama dengan data dari database Baadalletta"
+                android:textSize="10sp" />
+
+            <RelativeLayout
+                android:id="@+id/rl_sim"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_below="@id/tv_sim_sub"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_linput_photo">
+
+                <LinearLayout
+                    android:id="@+id/ll_illust_sim"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="200dp"
+                        android:layout_height="150dp"
+                        android:src="@drawable/illust_sim" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ambil Gambar"
+                        android:textColor="@color/ColorPrimary" />
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/img_sim"
+                    android:layout_centerInParent="true"
+                    android:layout_marginVertical="3dp"
+                    android:scaleType="centerInside"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+            </RelativeLayout>
+
+            <View
+                android:layout_below="@id/rl_sim"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"/>
+
+
+        </RelativeLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <RelativeLayout
+        android:id="@+id/rl_bottom"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:paddingVertical="6dp"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/rl_simpan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:background="@drawable/bg_primary_radius">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:paddingVertical="12dp"
+                android:text="Simpan"
+                android:textColor="@color/white"
+                android:textSize="16dp"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

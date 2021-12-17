@@ -22,6 +22,11 @@ import retrofit2.http.Query;
 public interface ApiInterface {
 
 
+    // PESANAN ID KURIR
+    @GET("kurir/get-pesanan/{kurir_id}")
+    Call<ResponsePesananKurir> getPesananIdKurir(@Path("kurir_id") String kurir_id);
+
+
     // PESANAN MAPS
     @POST("kurir/get-pesanan-status/kurir/{kurir_id}")
     Call<ResponsePesananKurir> getPesananMaps(@Path("kurir_id") String kurir_id,
@@ -31,10 +36,6 @@ public interface ApiInterface {
     Call<ResponsPesanan> setPesananKurir(@Path("pesanan_id") String pesanan_id,
                                          @Query("status_pesanan") String status_pesanan,
                                          @Query("id_kurir") int id_kurir);
-
-    // PESANAN
-    @GET("kurir/get-pesanan/{kurir_id}")
-    Call<ResponsePesananKurir> getPesananIdKurir(@Path("kurir_id") String kurir_id);
 
     // LOGIN
     @POST("kurir/auth")
@@ -95,5 +96,12 @@ public interface ApiInterface {
                                             @Query("password_lama") String password_lama,
                                             @Query("password_baru") String password_baru);
 
+
+    // UPDATE PHOTO VERIFIKASI KURIR
+    @Multipart
+    @POST("kurir/set-file/{kurir_id}")
+    Call<ResponseLogin> updatePhotoVerifikasi(@Path("kurir_id") String kurir_id,
+                                              @Part MultipartBody.Part foto_ktp,
+                                              @Part MultipartBody.Part foto_sim);
 
 }

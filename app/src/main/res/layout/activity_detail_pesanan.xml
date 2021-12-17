@@ -113,6 +113,35 @@
         android:src="@drawable/ic_baseline_layers_24"
         app:tint="@color/white" />
 
+    <LinearLayout
+        android:id="@+id/ll_ganti_rute"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:layout_below="@id/btn_jenis_map"
+        android:layout_marginHorizontal="10dp"
+        android:background="@drawable/bg_primary_radius_8"
+        android:layout_width="wrap_content"
+        android:paddingHorizontal="6dp"
+        android:gravity="center"
+        android:paddingVertical="5dp"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:src="@drawable/ic_baseline_autorenew_24"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            app:tint="@color/ColorPrimary" />
+
+        <TextView
+            android:layout_marginLeft="6dp"
+            android:text="Ganti Rute"
+            android:textStyle="bold"
+            android:textSize="12sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
     <RelativeLayout
         android:id="@+id/rl_bottom"
         android:layout_width="match_parent"

@@ -177,6 +177,8 @@ public class DetailPesananActivity extends AppCompatActivity implements OnMapRea
     private Kurir kurir;
     private String kurir_id;
 
+    private LinearLayout ll_ganti_rute;
+    private String rute_sekarang = "MY_LOCATION";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -211,6 +213,7 @@ public class DetailPesananActivity extends AppCompatActivity implements OnMapRea
         img_mulai = findViewById(R.id.img_mulai);
         tv_mulai = findViewById(R.id.tv_mulai);
         btn_jenis_map = findViewById(R.id.btn_jenis_map);
+        ll_ganti_rute = findViewById(R.id.ll_ganti_rute);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         assert mapFragment != null;
@@ -242,46 +245,9 @@ public class DetailPesananActivity extends AppCompatActivity implements OnMapRea
         rl_mulai.setOnClickListener(this::clickMulai);
         ll_foto.setOnClickListener(this::clickCamera);
 
-        img_whatsapp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        ll_ganti_rute.setOnClickListener(this::clickGantiRute);
 
-                new SweetAlertDialog(DetailPesananActivity.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Pesan WhatsApp")
-                        .setContentText("Ingin Mengirim Pesan WhatsApp ?")
-                        .setConfirmText("Ya")
-                        .setCancelText("Batal")
-                        .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                            @Override
-                            public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                sweetAlertDialog.dismissWithAnimation();
-                            }
-                        })
-                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                            @Override
-                            public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                sweetAlertDialog.dismissWithAnimation();
-//                                try {
-                                // Check if whatsapp is installed
-                                String number_whatsapp_send;
-                                String number_whatsapp = customer.getWhatsapp();
-                                String number_whatsapp_first = number_whatsapp.substring(0, 1);
-                                if (number_whatsapp_first.equals("0")) {
-                                    number_whatsapp_send = "62" + number_whatsapp.substring(1);
-                                } else {
-                                    number_whatsapp_send = number_whatsapp;
-                                }
-//                                    getPackageManager().getPackageInfo("com.whatsapp", PackageManager.GET_META_DATA);
-                                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://wa.me/" + number_whatsapp_send));
-                                startActivity(intent);
-//                                } catch (PackageManager.NameNotFoundException e) {
-//                                    Toast.makeText(DetailPesananActivity.this, "WhatsApp not Installed", Toast.LENGTH_SHORT).show();
-//                                }
-                            }
-                        })
-                        .show();
-            }
-        });
+        img_whatsapp.setOnClickListener(this::clickWhatsapp);
 
         btn_jenis_map.setOnClickListener(this::clickjenisMap);
 
@@ -296,6 +262,60 @@ public class DetailPesananActivity extends AppCompatActivity implements OnMapRea
             checkLocation();
         }
 
+    }
+
+    private void clickGantiRute(View view) {
+
+        if (rute_sekarang.equals("MY_LOCATION")) {
+            rute_sekarang = "BAADALLETTA_LOCATION";
+            new FetchURL(DetailPesananActivity.this).execute(getUrl(marker_list.get(0).getPosition(),
+                    marker_list.get(1).getPosition(), "driving"), "driving");
+            initJarakWaktu(pesanan_intent);
+        } else {
+            new FetchURL(DetailPesananActivity.this).execute(getUrl(marek_my_location.getPosition(),
+                    marker_list.get(1).getPosition(), "driving"), "driving");
+            first_laod = true;
+            rute_sekarang = "MY_LOCATION";
+            initJarakWaktuMyLocation(pesanan_intent);
+        }
+
+    }
+
+    private void clickWhatsapp(View view) {
+        new SweetAlertDialog(DetailPesananActivity.this, SweetAlertDialog.WARNING_TYPE)
+                .setTitleText("Pesan WhatsApp")
+                .setContentText("Ingin Mengirim Pesan WhatsApp ?")
+                .setConfirmText("Ya")
+                .setCancelText("Batal")
+                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        sweetAlertDialog.dismissWithAnimation();
+                    }
+                })
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        sweetAlertDialog.dismissWithAnimation();
+//                                try {
+                        // Check if whatsapp is installed
+                        String number_whatsapp_send;
+                        String number_whatsapp = customer.getWhatsapp();
+                        String number_whatsapp_first = number_whatsapp.substring(0, 1);
+                        if (number_whatsapp_first.equals("0")) {
+                            number_whatsapp_send = "62" + number_whatsapp.substring(1);
+                        } else {
+                            number_whatsapp_send = number_whatsapp;
+                        }
+//                                    getPackageManager().getPackageInfo("com.whatsapp", PackageManager.GET_META_DATA);
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://wa.me/" + number_whatsapp_send));
+                        startActivity(intent);
+//                                } catch (PackageManager.NameNotFoundException e) {
+//                                    Toast.makeText(DetailPesananActivity.this, "WhatsApp not Installed", Toast.LENGTH_SHORT).show();
+//                                }
+                    }
+                })
+                .show();
     }
 
     private boolean checkLocation() {
@@ -742,8 +762,6 @@ public class DetailPesananActivity extends AppCompatActivity implements OnMapRea
 
     private void initDataIntent(Pesanan pesanan_intent) {
 
-        initJarakWaktu(pesanan_intent);
-
         pesanan_id = String.valueOf(pesanan_intent.getId());
 
         String customer_id = String.valueOf(pesanan_intent.getId_customer());
@@ -822,6 +840,51 @@ public class DetailPesananActivity extends AppCompatActivity implements OnMapRea
         String latling_distance = pesanan_intent.getTitik_koordinat();
         String lat_ba = Constanta.LATITUDE_BAADALLETTA;
         String longi_ba = Constanta.LONGITUDE_BAADALLETTA;
+        String latling_origin = lat_ba + "," + longi_ba;
+
+        ApiInterface apiInterface2 = ApiClientMaps.getClient().create(ApiInterface.class);
+        Call<ResponseDistanceMaps> responseDistanceMapsCall = apiInterface2.getDirectionMatrix(latling_origin,
+                latling_distance, BuildConfig.API_KEY_MAPS);
+        responseDistanceMapsCall.enqueue(new Callback<ResponseDistanceMaps>() {
+            @Override
+            public void onResponse(Call<ResponseDistanceMaps> call, Response<ResponseDistanceMaps> response) {
+
+                String status = response.body().getStatus();
+                if (status.equals("OK")) {
+                    List<RowsItem> rowsItem = response.body().getRows();
+                    for (int a = 0; a < rowsItem.size(); a++) {
+                        List<ElementsItem> elementsItem = rowsItem.get(a).getElements();
+                        if (elementsItem.get(a).getStatus().equals("OK")) {
+                            for (int b = 0; b < elementsItem.size(); b++) {
+
+                                Distance distance = elementsItem.get(b).getDistance();
+                                String jarak = distance.getText();
+                                tv_jarak.setText("Jarak : " + jarak);
+
+
+                                Duration duration = elementsItem.get(b).getDuration();
+                                String waktu = duration.getText();
+                                tv_waktu.setText("Waktu : " + waktu);
+                            }
+                        }
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseDistanceMaps> call, Throwable t) {
+
+                Toast.makeText(DetailPesananActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void initJarakWaktuMyLocation(Pesanan pesanan_intent) {
+
+        String latling_distance = pesanan_intent.getTitik_koordinat();
+        String lat_ba = String.valueOf(latLng_kurir.latitude);
+        String longi_ba = String.valueOf(latLng_kurir.longitude);
         String latling_origin = lat_ba + "," + longi_ba;
 
         ApiInterface apiInterface2 = ApiClientMaps.getClient().create(ApiInterface.class);
@@ -1029,7 +1092,6 @@ public class DetailPesananActivity extends AppCompatActivity implements OnMapRea
         }
     }
 
-
     private String getUrl(LatLng origin, LatLng dest, String directionMode) {
         // Origin of route
         String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
@@ -1100,11 +1162,14 @@ public class DetailPesananActivity extends AppCompatActivity implements OnMapRea
         marek_my_location = map.addMarker(markerOptions.icon(bitmapDescriptorKurir(this)));
 //        Toast.makeText(DetailPesananActivity.this, "Pindah", Toast.LENGTH_SHORT).show();
 
-        if (marker_list.size() > 1) {
-            if (first_laod) {
-                new FetchURL(DetailPesananActivity.this).execute(getUrl(marek_my_location.getPosition(),
-                        marker_list.get(1).getPosition(), "driving"), "driving");
-                first_laod = false;
+        if (rute_sekarang.equals("MY_LOCATION")) {
+            if (marker_list.size() > 1) {
+                if (first_laod) {
+                    new FetchURL(DetailPesananActivity.this).execute(getUrl(marek_my_location.getPosition(),
+                            marker_list.get(1).getPosition(), "driving"), "driving");
+                    first_laod = false;
+                    initJarakWaktuMyLocation(pesanan_intent);
+                }
             }
         }
 //        updateLatlingSession(location);
@@ -1113,8 +1178,9 @@ public class DetailPesananActivity extends AppCompatActivity implements OnMapRea
     }
 
     boolean isRotating = false;
+
     public void rotateMarker(final Marker marker, final float toRotation) {
-        if(!isRotating) {
+        if (!isRotating) {
             isRotating = true;
             final Handler handler = new Handler();
             final long start = SystemClock.uptimeMillis();
@@ -1142,7 +1208,7 @@ public class DetailPesananActivity extends AppCompatActivity implements OnMapRea
         }
     }
 
-    public void animateMarker(final Marker marker,final LatLng toPosition, final boolean hideMarke) {
+    public void animateMarker(final Marker marker, final LatLng toPosition, final boolean hideMarke) {
         final Handler handler = new Handler();
         final long start = SystemClock.uptimeMillis();
         Projection proj = map.getProjection();

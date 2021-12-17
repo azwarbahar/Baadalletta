@@ -267,6 +267,44 @@
 
                 </LinearLayout>
 
+                <RelativeLayout
+                    android:id="@+id/rl_verifed_aller"
+                    android:layout_alignBottom="@id/map"
+                    android:background="@drawable/bg_danger_trans_radius"
+                    android:layout_width="match_parent"
+                    android:layout_marginBottom="30dp"
+                    android:paddingVertical="6dp"
+                    android:paddingHorizontal="16dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/img_verifed"
+                        android:layout_width="30dp"
+                        android:layout_centerVertical="true"
+                        android:layout_height="30dp"
+                        android:src="@drawable/ic_icon_verifed"
+                        app:tint="@color/white" />
+
+                    <TextView
+                        android:textColor="@color/white"
+                        android:text="Akun belum terverifikasi"
+                        android:layout_toRightOf="@id/img_verifed"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_centerVertical="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <ImageView
+                        android:id="@+id/img_chevron"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/ic_baseline_chevron_right_24"
+                        app:tint="@color/white" />
+
+                </RelativeLayout>
 
             </RelativeLayout>
 

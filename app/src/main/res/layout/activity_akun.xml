@@ -233,6 +233,7 @@
                                 android:textStyle="bold" />
 
                             <TextView
+                                android:id="@+id/tv_status_verived"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_centerVertical="true"
@@ -369,7 +370,7 @@
                                 android:layout_centerVertical="true"
                                 android:layout_marginHorizontal="16dp"
                                 android:layout_toRightOf="@id/img_logout"
-                                android:text="Lohout"
+                                android:text="Logout"
                                 android:textColor="@color/black"
                                 android:textStyle="bold" />
 

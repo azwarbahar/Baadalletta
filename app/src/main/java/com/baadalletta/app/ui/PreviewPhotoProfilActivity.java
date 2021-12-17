@@ -8,6 +8,9 @@ import android.widget.ImageView;
 
 import com.baadalletta.app.R;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.Priority;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.github.chrisbanes.photoview.PhotoView;
 
 public class PreviewPhotoProfilActivity extends AppCompatActivity {
@@ -26,10 +29,15 @@ public class PreviewPhotoProfilActivity extends AppCompatActivity {
         img_zoom = findViewById(R.id.img_zoom);
 
         foto = getIntent().getStringExtra("foto");
+        RequestOptions options = new RequestOptions()
+                .placeholder(R.drawable.loading_animation)
+                .error(R.drawable.ic_broken_image)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .priority(Priority.HIGH);
 
         Glide.with(PreviewPhotoProfilActivity.this)
                 .load(foto)
-                .placeholder(R.drawable.loading_animation)
+                .apply(options)
                 .into(img_zoom);
 
         img_close.setOnClickListener(new View.OnClickListener() {

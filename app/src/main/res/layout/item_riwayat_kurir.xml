@@ -20,10 +20,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:maxLines="2"
-            android:textStyle="bold"
-            android:text="@string/alamat"
+            android:text="xxxxxx xxxxxx xxxxxxx xxxx"
             android:textColor="@color/black"
-            android:textSize="12dp" />
+            android:textSize="12dp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tv_nama"
@@ -32,7 +32,7 @@
             android:layout_below="@id/tv_alamat"
             android:layout_alignLeft="@id/tv_alamat"
             android:layout_marginTop="6dp"
-            android:text="Nama : Azwar Bahar"
+            android:text="Nama : xxxxx xxxxx"
             android:textColor="@color/black2"
             android:textSize="10sp" />
 
@@ -43,7 +43,7 @@
             android:textColor="@color/black2"
             android:layout_below="@id/tv_nama"
             android:layout_alignLeft="@id/tv_alamat"
-            android:text="Kode : Azwar Bahar"
+            android:text="Kode : xx xx xx"
             android:textSize="12sp" />
 
         <TextView
@@ -67,6 +67,7 @@
             android:paddingVertical="4dp">
 
             <TextView
+                android:id="@+id/tv_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Selesai"

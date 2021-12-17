@@ -12,6 +12,9 @@ import androidx.viewpager.widget.PagerAdapter;
 import com.baadalletta.app.R;
 import com.baadalletta.app.utils.Constanta;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.Priority;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.github.chrisbanes.photoview.PhotoView;
 
 import java.util.ArrayList;
@@ -57,10 +60,18 @@ public class ImagePelangganAdapter extends PagerAdapter {
         // setting the image in the imageView
 //        imageView.setImageResource(images[position]);
 
+        RequestOptions options = new RequestOptions()
+                .centerInside()
+                .placeholder(R.drawable.loading_animation)
+                .error(R.drawable.ic_broken_image)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .priority(Priority.HIGH);
+
         Glide.with(context)
                 .load(images.get(position))
-                .placeholder(R.drawable.loading_animation)
+                .apply(options)
                 .into(imageView);
+
         // Adding the View
         Objects.requireNonNull(container).addView(itemView);
 
