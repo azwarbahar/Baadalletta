@@ -8,6 +8,7 @@
     app:cardCornerRadius="10dp">
 
     <RelativeLayout
+        android:id="@+id/rl_continer_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/ColorPrimary102"

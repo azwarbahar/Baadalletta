@@ -162,6 +162,7 @@ public class DetailPesananActivity extends AppCompatActivity implements OnMapRea
     private String pesanan_id;
 
     private boolean delivery_status = false;
+    private boolean done_status = false;
 
     private static final String TAG = DetailPesananActivity.class.getSimpleName();
     public static final int REQUEST_IMAGE = 100;
@@ -667,6 +668,11 @@ public class DetailPesananActivity extends AppCompatActivity implements OnMapRea
 
         if (delivery_status) {
             continer_dialog.setVisibility(View.VISIBLE);
+        } else if (done_status) {
+            new SweetAlertDialog(DetailPesananActivity.this, SweetAlertDialog.SUCCESS_TYPE)
+                    .setTitleText("Selesai")
+                    .setContentText("Pesanan ini telah selesai diantarkan!")
+                    .show();
         } else {
             if (isDelivery_ready) {
                 new SweetAlertDialog(DetailPesananActivity.this, SweetAlertDialog.ERROR_TYPE)
@@ -774,8 +780,13 @@ public class DetailPesananActivity extends AppCompatActivity implements OnMapRea
             img_mulai.setImageResource(R.drawable.ic_baseline_done_24);
             rl_mulai.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_mulai_primary_dark_btn));
 
+        } else if (status_pesanan.equals("done")) {
+            tv_mulai.setText("Selesai");
+            done_status = true;
+            img_mulai.setImageResource(R.drawable.ic_baseline_done_24);
+            rl_mulai.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_mulai_disable_btn));
 
-        } else if (status_pesanan.equals("proses")) {
+        } else {
             checkPesananDelivery(kurir_id);
         }
 

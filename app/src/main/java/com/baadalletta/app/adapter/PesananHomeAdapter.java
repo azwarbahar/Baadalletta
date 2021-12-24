@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.baadalletta.app.BuildConfig;
@@ -46,13 +47,11 @@ public class PesananHomeAdapter extends RecyclerView.Adapter<PesananHomeAdapter.
     private Context context;
     private ArrayList<Pesanan> pesananArrayList;
     private PesananListRecyclerClickListener mClickListener;
-    private List<Place> places;
 
-    public PesananHomeAdapter(Context context, ArrayList<Pesanan> pesananArrayList, PesananListRecyclerClickListener mClickListener, List<Place> places) {
+    public PesananHomeAdapter(Context context, ArrayList<Pesanan> pesananArrayList, PesananListRecyclerClickListener mClickListener) {
         this.context = context;
         this.pesananArrayList = pesananArrayList;
         this.mClickListener = mClickListener;
-        this.places = places;
     }
 
     @NonNull
@@ -70,7 +69,16 @@ public class PesananHomeAdapter extends RecyclerView.Adapter<PesananHomeAdapter.
 
         String customer_id = String.valueOf(pesananArrayList.get(position).getId_customer());
 
+        String status_pesanan = pesananArrayList.get(position).getStatus_pesanan();
         String latling_distance = pesananArrayList.get(position).getTitik_koordinat();
+
+        if (status_pesanan.equals("done")){
+            holder.rl_continer_list.setBackground(ContextCompat.getDrawable(
+                    context, R.color.ColorPrimaryGrey));
+        } else {
+            holder.rl_continer_list.setBackground(ContextCompat.getDrawable(
+                    context, R.color.ColorPrimary102));
+        }
 
         String lat_ba = Constanta.LATITUDE_BAADALLETTA;
         String longi_ba = Constanta.LONGITUDE_BAADALLETTA;
@@ -114,7 +122,6 @@ public class PesananHomeAdapter extends RecyclerView.Adapter<PesananHomeAdapter.
 
 
         holder.tv_nomor.setText(String.valueOf(position + 1));
-//        holder.tv_nomor.setText(places.get(position).getId_pesanan());
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<ResponsCustomer> responsCustomerCall = apiInterface.getCustomerId(customer_id);
         responsCustomerCall.enqueue(new Callback<ResponsCustomer>() {
@@ -168,6 +175,7 @@ public class PesananHomeAdapter extends RecyclerView.Adapter<PesananHomeAdapter.
         private TextView tv_jarak;
 
         private RelativeLayout rl_lihat;
+        private RelativeLayout rl_continer_list;
 
         PesananListRecyclerClickListener pesananListRecyclerClickListener;
 
@@ -181,6 +189,7 @@ public class PesananHomeAdapter extends RecyclerView.Adapter<PesananHomeAdapter.
             tv_kode = itemView.findViewById(R.id.tv_kode);
             tv_nama = itemView.findViewById(R.id.tv_nama);
             tv_jarak = itemView.findViewById(R.id.tv_jarak);
+            rl_continer_list = itemView.findViewById(R.id.rl_continer_list);
 
             pesananListRecyclerClickListener = clickListener;
 

@@ -14,6 +14,10 @@ public class Pesanan implements Parcelable {
 
 	private String created_at;
 
+	private String ready_maps;
+
+	private String tanggal;
+
 	private int id_kurir;
 
 	private String status_pesanan;
@@ -45,6 +49,8 @@ public class Pesanan implements Parcelable {
 		ongkir = in.readInt();
 		id_customer = in.readInt();
 		created_at = in.readString();
+		ready_maps = in.readString();
+		tanggal = in.readString();
 		id_kurir = in.readInt();
 		status_pesanan = in.readString();
 		total = in.readInt();
@@ -86,6 +92,14 @@ public class Pesanan implements Parcelable {
 
 	public String getCreated_at() {
 		return created_at;
+	}
+
+	public String getReady_maps() {
+		return ready_maps;
+	}
+
+	public String getTanggal() {
+		return tanggal;
 	}
 
 	public int getId_kurir() {
@@ -151,6 +165,8 @@ public class Pesanan implements Parcelable {
 		parcel.writeInt(ongkir);
 		parcel.writeInt(id_customer);
 		parcel.writeString(created_at);
+		parcel.writeString(ready_maps);
+		parcel.writeString(tanggal);
 		parcel.writeInt(id_kurir);
 		parcel.writeString(status_pesanan);
 		parcel.writeInt(total);

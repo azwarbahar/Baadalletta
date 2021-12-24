@@ -269,31 +269,31 @@
 
                 <RelativeLayout
                     android:id="@+id/rl_verifed_aller"
-                    android:layout_alignBottom="@id/map"
-                    android:background="@drawable/bg_danger_trans_radius"
                     android:layout_width="match_parent"
-                    android:layout_marginBottom="30dp"
-                    android:paddingVertical="6dp"
-                    android:paddingHorizontal="16dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/map"
                     android:layout_marginHorizontal="16dp"
-                    android:layout_height="wrap_content">
+                    android:layout_marginBottom="30dp"
+                    android:background="@drawable/bg_danger_trans_radius"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="6dp">
 
                     <ImageView
                         android:id="@+id/img_verifed"
                         android:layout_width="30dp"
-                        android:layout_centerVertical="true"
                         android:layout_height="30dp"
+                        android:layout_centerVertical="true"
                         android:src="@drawable/ic_icon_verifed"
                         app:tint="@color/white" />
 
                     <TextView
-                        android:textColor="@color/white"
-                        android:text="Akun belum terverifikasi"
-                        android:layout_toRightOf="@id/img_verifed"
-                        android:layout_marginHorizontal="16dp"
-                        android:layout_centerVertical="true"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_toRightOf="@id/img_verifed"
+                        android:text="Akun belum terverifikasi"
+                        android:textColor="@color/white" />
 
                     <ImageView
                         android:id="@+id/img_chevron"
@@ -343,6 +343,16 @@
                     android:text="Pengantara"
                     android:textColor="@color/white"
                     android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/img_menu"
+                    android:layout_alignBottom="@id/tv_title_sliding"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_alignParentRight="true"
+                    android:src="@drawable/ic_baseline_more_vert_24"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:tint="@color/white" />
 
                 <ImageView
                     android:id="@+id/img_kosong"

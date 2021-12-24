@@ -22,4 +22,7 @@ public class Constanta {
     public static final String URL_PHOTO_KTP_KURIR = "https://baadalletta.com/uploads/berkasKurir/foto_ktp/";
     public static final String URL_PHOTO_SIM_KURIR = "https://baadalletta.com/uploads/berkasKurir/foto_sim/";
 
+    // SESSION OPTIMIZE ROUTE MARKER MAPS
+    public static final String OPTIMIZE_MAPS = "OPTIMIZE_MAPS";
+
 }

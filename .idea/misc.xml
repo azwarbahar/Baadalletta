@@ -23,6 +23,9 @@
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/drawable/bg_trans_merah.xml" value="0.20989583333333334" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/drawable/ic_broken_image.xml" value="0.20989583333333334" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/drawable/ic_img_marker_1.xml" value="0.20989583333333334" />
+        <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/drawable/img_marker.xml" value="0.20989583333333334" />
+        <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/drawable/img_marker_1.xml" value="0.20989583333333334" />
+        <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/drawable/img_marker_10.xml" value="0.20989583333333334" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/drawable/loading_img.xml" value="0.20989583333333334" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/activity_akun.xml" value="0.22" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/activity_detail_pesanan.xml" value="0.14666666666666667" />
@@ -37,6 +40,7 @@
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/activity_preview_photo.xml" value="0.19375" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/activity_preview_photo_bitmap.xml" value="0.19375" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/activity_preview_photo_profil.xml" value="0.19375" />
+        <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/activity_riwayat_map.xml" value="0.19375" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/activity_splash_screen.xml" value="0.19375" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/activity_verifikasi.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/dialog_jenis_maps.xml" value="0.19375" />

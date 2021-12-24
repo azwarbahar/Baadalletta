@@ -22,6 +22,16 @@ import retrofit2.http.Query;
 public interface ApiInterface {
 
 
+    // PESANAN READY MAPS
+    @POST("kurir/getPesananReadymaps/{kurir_id}")
+    Call<ResponsePesananKurir> getPesananReadymaps(@Path("kurir_id") String kurir_id,
+                                                   @Query("ready_maps") String ready_maps);
+
+    @POST("kurir/setPesananReadymaps/{pesanan_id}")
+    Call<ResponsPesanan> setPesananReadymaps(@Path("pesanan_id") String pesanan_id,
+                                             @Query("ready_maps") String ready_maps);
+
+
     // PESANAN ID KURIR
     @GET("kurir/get-pesanan/{kurir_id}")
     Call<ResponsePesananKurir> getPesananIdKurir(@Path("kurir_id") String kurir_id);
