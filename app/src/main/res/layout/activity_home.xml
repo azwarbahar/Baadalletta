@@ -189,6 +189,7 @@
                     app:tint="@color/white" />
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/cv_pengantaran"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/btn_jenis_map"
@@ -219,10 +220,10 @@
                             android:id="@+id/tv_jumlah_pengantaran"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="6dp"
-                            android:layout_toRightOf="@id/tv10"
-                            android:layout_marginTop="3dp"
                             android:layout_centerVertical="true"
+                            android:layout_marginLeft="6dp"
+                            android:layout_marginTop="3dp"
+                            android:layout_toRightOf="@id/tv10"
                             android:text="x"
                             android:textColor="@color/ColorPrimary"
                             android:textSize="14sp"
@@ -235,6 +236,60 @@
                             android:layout_marginLeft="10dp"
                             android:layout_toRightOf="@id/tv_jumlah_pengantaran"
                             android:src="@drawable/ic_baseline_chevron_right_24" />
+
+                    </RelativeLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cv_pesanan_masuk"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/cv_pengantaran"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginTop="16dp"
+                    app:cardCornerRadius="6dp"
+                    app:cardElevation="6dp">
+
+                    <RelativeLayout
+                        android:id="@+id/rl_pesanan_masuk"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/ColorPrimary"
+                        android:paddingHorizontal="16dp"
+                        android:paddingVertical="6dp">
+
+                        <TextView
+                            android:id="@+id/tv20"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:text="Pesanan Masuk"
+                            android:textColor="@color/white"
+                            android:textSize="12sp"
+                            android:textStyle="italic" />
+
+                        <TextView
+                            android:id="@+id/tv_jumlah_pesanana_masuk"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="6dp"
+                            android:layout_marginTop="3dp"
+                            android:layout_toRightOf="@id/tv20"
+                            android:text="x"
+                            android:textColor="@color/white"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="10dp"
+                            android:layout_toRightOf="@id/tv_jumlah_pesanana_masuk"
+                            android:src="@drawable/ic_baseline_chevron_right_24"
+                            app:tint="@color/white2" />
 
                     </RelativeLayout>
 
@@ -346,12 +401,12 @@
 
                 <ImageView
                     android:id="@+id/img_menu"
-                    android:layout_alignBottom="@id/tv_title_sliding"
-                    android:layout_marginHorizontal="16dp"
-                    android:layout_alignParentRight="true"
-                    android:src="@drawable/ic_baseline_more_vert_24"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/tv_title_sliding"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginHorizontal="16dp"
+                    android:src="@drawable/ic_baseline_more_vert_24"
                     app:tint="@color/white" />
 
                 <ImageView

@@ -1,19 +1,21 @@
 package com.baadalletta.app.ui;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.baadalletta.app.R;
-import com.baadalletta.app.adapter.PesananHomeAdapter;
 import com.baadalletta.app.adapter.RiwayatKurirAdapter;
 import com.baadalletta.app.models.Kurir;
 import com.baadalletta.app.models.Pesanan;
@@ -77,7 +79,44 @@ public class HistoryActivity extends AppCompatActivity implements SwipeRefreshLa
             }
         });
 
+        et_cari.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.toString().isEmpty() || editable.toString().equals("")) {
+
+                } else {
+                    filter(editable.toString());
+                    changeDrawableEdittext();
+                }
+            }
+        });
+
+    }
+
+    private void changeDrawableEdittext() {
+        et_cari.setCompoundDrawablesWithIntrinsicBounds(null, null,
+                ContextCompat.getDrawable(HistoryActivity.this, R.drawable.ic_baseline_close_24), null);
+
+    }
+
+    private void filter(String text) {
+        ArrayList<Pesanan> filteredList = new ArrayList<>();
+        for (Pesanan item : pesanans) {
+            if (item.getStatus_pesanan().toLowerCase().contains(text.toLowerCase())) {
+                filteredList.add(item);
+            }
+        }
+        riwayatKurirAdapter.filterList(filteredList);
     }
 
     private void loadData(String kurir_id) {

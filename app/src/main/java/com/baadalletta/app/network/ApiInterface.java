@@ -2,6 +2,7 @@ package com.baadalletta.app.network;
 
 import com.baadalletta.app.models.ResponsCustomer;
 import com.baadalletta.app.models.ResponsPesanan;
+import com.baadalletta.app.models.ResponseAbsen;
 import com.baadalletta.app.models.ResponseKurir;
 import com.baadalletta.app.models.ResponseLogin;
 import com.baadalletta.app.models.ResponsePesananKurir;
@@ -18,8 +19,15 @@ import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import retrofit2.http.Url;
 
 public interface ApiInterface {
+
+    // ABSEN KURIR
+    @POST()
+    Call<ResponseAbsen> setAbsen(@Url String url,
+                                 @Query("id_kurir") String id_kurir,
+                                 @Query("time") String time);
 
 
     // PESANAN READY MAPS

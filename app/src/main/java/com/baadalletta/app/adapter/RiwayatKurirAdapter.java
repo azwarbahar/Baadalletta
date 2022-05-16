@@ -1,5 +1,6 @@
 package com.baadalletta.app.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +36,14 @@ public class RiwayatKurirAdapter extends RecyclerView.Adapter<RiwayatKurirAdapte
         this.context = context;
         this.pesanans = pesanans;
     }
+
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void filterList(ArrayList<Pesanan> pesanans2) {
+        pesanans = pesanans2;
+        notifyDataSetChanged();
+    }
+
 
     @NonNull
     @Override
@@ -77,7 +86,7 @@ public class RiwayatKurirAdapter extends RecyclerView.Adapter<RiwayatKurirAdapte
             }
         });
 
-        holder.tv_update.setText("Update : " + pesanans.get(position).getUpdated_at().substring(0,19));
+        holder.tv_update.setText("Update : " + pesanans.get(position).getUpdated_at().substring(0, 19));
         String status_pesana = pesanans.get(position).getStatus_pesanan();
         if (status_pesana.equals("done")) {
             holder.tv_status.setText("Selesai");

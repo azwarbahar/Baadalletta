@@ -18,6 +18,8 @@ import com.baadalletta.app.models.ResponseLogin;
 import com.baadalletta.app.network.ApiClient;
 import com.baadalletta.app.network.ApiInterface;
 import com.baadalletta.app.utils.Constanta;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import retrofit2.Call;
@@ -27,8 +29,11 @@ import retrofit2.Response;
 public class LoginActivity extends AppCompatActivity {
 
     private RelativeLayout rl_masuk;
-    private EditText et_telpon;
-    private EditText et_password;
+
+    private TextInputEditText tie_telpon;
+    private TextInputEditText tie_password;
+    private TextInputLayout til_telpon;
+    private TextInputLayout til_password;
 
     private SharedPreferences sharedpreferences;
     private SharedPreferences.Editor editor;
@@ -49,24 +54,28 @@ public class LoginActivity extends AppCompatActivity {
             finish();
         }
 
-        et_telpon = findViewById(R.id.et_telpon);
-        et_password = findViewById(R.id.et_password);
+
+        tie_telpon = findViewById(R.id.tie_telpon);
+        tie_password = findViewById(R.id.tie_password);
+        til_telpon = findViewById(R.id.til_telpon);
+        til_password = findViewById(R.id.til_password);
+
         rl_masuk = findViewById(R.id.rl_masuk);
         rl_masuk.setOnClickListener(this::clickMasuk);
     }
 
     private void clickMasuk(View view) {
 
-        et_telpon.setError(null);
-        et_password.setError(null);
+        til_telpon.setError(null);
+        til_password.setError(null);
 
-        String telpon = et_telpon.getText().toString();
-        String password = et_password.getText().toString();
+        String telpon = tie_telpon.getText().toString();
+        String password = tie_password.getText().toString();
 
         if (telpon.equals("") || telpon.isEmpty()) {
-            et_telpon.setError("Lengkapi");
+            til_telpon.setError("Lengkapi");
         } else if (password.equals("") || password.isEmpty()) {
-            et_password.setError("Lengkapi");
+            til_password.setError("Lengkapi");
         } else {
             loadLogin(telpon, password);
         }

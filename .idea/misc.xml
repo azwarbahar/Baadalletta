@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Hilda/.gradle/caches/transforms-3/385b211403e6f34a50768f5dbd62ac45/transformed/jetified-library-1.5.6/res/layout/alert_dialog.xml" value="0.19375" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/drawable/bg_btn_lapor.xml" value="0.175" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/drawable/bg_btn_lapor_white.xml" value="0.175" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/drawable/bg_bulat_putih.xml" value="0.20989583333333334" />
@@ -32,7 +33,7 @@
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/activity_edit_akun.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/activity_edit_password.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/activity_history.xml" value="0.19375" />
-        <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/activity_home.xml" value="0.22" />
+        <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/activity_home.xml" value="0.6" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/activity_image_pengantaran_picker.xml" value="0.19375" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/activity_image_picker_sim.xml" value="0.1796875" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/activity_login.xml" value="0.22" />
@@ -44,6 +45,8 @@
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/activity_splash_screen.xml" value="0.19375" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/activity_verifikasi.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/dialog_jenis_maps.xml" value="0.19375" />
+        <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/dialog_list_pesanan_baru.xml" value="0.19375" />
+        <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/item_dialog_list_pesanan.xml" value="0.19375" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/item_img_slide.xml" value="0.19375" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/item_pesanan_home.xml" value="0.22" />
         <entry key="..\:/Users/Hilda/Documents/Azwar/AndroidStudioProjects/Baadalletta/app/src/main/res/layout/item_riwayat_kurir.xml" value="0.22" />

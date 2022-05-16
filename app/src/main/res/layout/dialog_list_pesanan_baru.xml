@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginTop="10dp"
+        android:layout_marginHorizontal="19dp"
+        android:layout_marginBottom="10dp"
+        android:id="@+id/rv_dialog_pesanan"
+        android:layout_width="match_parent"
+        tools:listitem="@layout/item_dialog_list_pesanan"
+        android:layout_height="wrap_content"/>
+
+</RelativeLayout>
